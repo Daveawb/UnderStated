@@ -1,0 +1,31 @@
+{
+  "name": "daveawb/fsm",
+  "description": "A PHP Finite State Machine ",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "David Barker",
+      "email": "david.aw.barker@gmail.com"
+    }
+  ],
+  "autoload" : {
+    "psr-4" : {
+      "FSM\\" : "src/"
+    }
+  },
+  "autoload-dev" : {
+    "psr-4" : {
+      "TestSrc\\" : "spec/src/"
+    }
+  },
+  "require": {
+    "clue/graph": "^0.9.0",
+    "graphp/algorithms": "^0.8.1"
+  },
+  "require-dev": {
+    "phpspec/phpspec": "^2.2",
+    "behat/behat": "^3.0",
+    "phpspec/nyan-formatters": "^1.0"
+  }
+}

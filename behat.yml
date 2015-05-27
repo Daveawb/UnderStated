@@ -1,0 +1,7 @@
+default:
+  autoload:
+    '' : %paths.base%/tests
+  suites:
+      fsm:
+        paths : [%paths.base%/tests/Features/FSM]
+        contexts: [Contexts\FsmContext]

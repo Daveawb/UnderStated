@@ -1,0 +1,9 @@
+suites:
+    main:
+        namespace: FSM
+        psr4_prefix: FSM
+        src_path : src
+        spec_path : tests
+extensions:
+    - PhpSpec\NyanFormattersExtension\Extension
+formatter.name: nyan.cat
