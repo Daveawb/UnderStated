@@ -1,5 +1,10 @@
 <?php namespace FSM\Contracts;
 
-interface StateInterface {
+/**
+ * Interface StateInterface
+ * @package FSM\Contracts
+ */
+interface StateInterface
+{
 
 }

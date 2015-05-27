@@ -1,6 +1,4 @@
-<?php
-
-namespace FSM\States;
+<?php namespace FSM\States;
 
 use FSM\Contracts\Machine\MachineInterface;
 use FSM\Contracts\ComponentInterface;
