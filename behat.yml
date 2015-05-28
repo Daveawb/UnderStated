@@ -3,5 +3,5 @@ default:
     '' : %paths.base%/tests
   suites:
       fsm:
-        paths : [%paths.base%/tests/Features/FSM]
+        paths : [%paths.base%/tests/Features]
         contexts: [Contexts\FsmContext]

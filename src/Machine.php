@@ -1,68 +1,141 @@
 <?php namespace FSM;
 
-use FSM\Contracts\Machine\MachineInterface;
-use FSM\Contracts\ComponentInterface;
-use FSM\Contracts\StateInterface;
-use FSM\Contracts\StructureInterface;
+use Fhaculty\Graph\Graph;
+use Illuminate\Container\Container;
+use Illuminate\Support\Collection;
 
 /**
  * Class Machine
  * @package FSM
  */
-class Machine implements MachineInterface
+abstract class Machine
 {
     /**
-     * @var StructureInterface
+     * @var
      */
-    protected $structure;
+    private $graph;
+    /**
+     * @var Container
+     */
+    private $app;
+    /**
+     * @var Collection
+     */
+    private $states;
 
     /**
-     * @var StateInterface
-     */
-    protected $state;
-
-    /**
-     * Register a structure with the base machine.
+     * Construct the machine
      *
-     * @param StructureInterface $structure
+     * @param Container $app
+     * @param Graph $graph
+     * @param Collection $states
+     */
+    public function __construct(Container $app, Graph $graph, Collection $states)
+    {
+        $this->app = $app;
+        $this->graph = $graph;
+        $this->states = $states;
+
+        $this->mapStates();
+    }
+
+    /**
+     * Return a class list of all the states
+     *
+     * @return array
+     */
+    abstract public function states();
+
+    /**
+     * Return an array of transitions state => state
+     *
+     * @return array
+     */
+    abstract public function transitions();
+
+    /**
+     * Get an instance of the machines graph
+     *
      * @return mixed
      */
-    public function structure(StructureInterface $structure)
+    public function getGraph()
     {
-        $this->structure = $structure;
-
-        $this->registerComponent($structure);
+        return $this->graph;
     }
 
     /**
-     * Register a state with the base machine.
-     *
-     * @param StateInterface $state
-     * @param bool $initial
+     * Map the states to the graph
+     */
+    private function mapStates()
+    {
+        foreach($this->states() as $state)
+        {
+            $instance = $this->getState($state);
+
+            $instance->setMachine($this);
+
+            $this->graph->createVertex($instance->getId())
+                ->setAttribute('state', $state);
+
+            $this->states[$state] = $instance;
+        }
+
+        $this->state = $this->states->first();
+
+        foreach($this->transitions() as $from => $to)
+        {
+            $vertex = $this->graph->getVertex($this->states->get($from)->getId());
+
+            $nextVertex = $this->graph->getVertex($this->states->get($to)->getId());
+
+            $vertex->createEdgeTo($nextVertex);
+        }
+    }
+
+    /**
+     * @param string $state
+     */
+    public function transition($state)
+    {
+        $from = $this->graph->getVertex($this->state->getId());
+
+        $to = $this->graph->getVertex($state);
+
+//        var_dump($from);
+//        var_dump($to);
+//        var_dump($from->hasEdgeTo($to));
+
+        if ($from->hasEdgeTo($to))
+        {
+            $this->handle('onExit');
+
+            $this->state = $this->states->get($to->getAttribute('state'));
+
+            $this->handle('onEnter');
+        }
+    }
+
+    /**
+     * @param $handle
+     * @param array $args
      * @return mixed
      */
-    public function state(StateInterface $state, $initial = false)
+    public function handle($handle, $args = [])
     {
-        $this->registerComponent($state);
-
-        $this->structure->addState($state, $initial);
+        if (method_exists($this->state, $handle))
+        {
+            call_user_func_array([$this->state, $handle], $args);
+        }
     }
 
     /**
-     * Register this machine as a mediator.
-     *
-     * @param $component
+     * @param string $state
+     * @return State
      */
-    protected function registerComponent(ComponentInterface $component)
+    private function getState($state)
     {
-        $component->FSM($this);
-    }
+        $class = '\\'.ltrim($state, '\\');
 
-    /**
-     * @param StateInterface $state
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
+        return $this->app->make($class);
     }
 }

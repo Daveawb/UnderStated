@@ -16,12 +16,13 @@
   },
   "autoload-dev" : {
     "psr-4" : {
-      "TestSrc\\" : "spec/src/"
+      "Examples\\" : "examples/"
     }
   },
   "require": {
     "clue/graph": "^0.9.0",
-    "graphp/algorithms": "^0.8.1"
+    "illuminate/support": "^5.0",
+    "illuminate/container": "^5.0"
   },
   "require-dev": {
     "phpspec/phpspec": "^2.2",
