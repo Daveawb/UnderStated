@@ -14,10 +14,12 @@ abstract class Machine
      * @var
      */
     private $graph;
+
     /**
      * @var Container
      */
     private $app;
+
     /**
      * @var Collection
      */
@@ -37,6 +39,11 @@ abstract class Machine
         $this->states = $states;
 
         $this->mapStates();
+        $this->mapTransitions();
+
+        $this->state = $this->states->first();
+
+        $this->handle('onEnter');
     }
 
     /**
@@ -54,68 +61,68 @@ abstract class Machine
     abstract public function transitions();
 
     /**
-     * Get an instance of the machines graph
-     *
-     * @return mixed
-     */
-    public function getGraph()
-    {
-        return $this->graph;
-    }
-
-    /**
      * Map the states to the graph
+     *
+     * @return void
      */
     private function mapStates()
     {
-        foreach($this->states() as $state)
+        foreach ($this->states() as $state)
         {
-            $instance = $this->getState($state);
-
-            $instance->setMachine($this);
-
-            $this->graph->createVertex($instance->getId())
-                ->setAttribute('state', $state);
-
-            $this->states[$state] = $instance;
-        }
-
-        $this->state = $this->states->first();
-
-        foreach($this->transitions() as $from => $to)
-        {
-            $vertex = $this->graph->getVertex($this->states->get($from)->getId());
-
-            $nextVertex = $this->graph->getVertex($this->states->get($to)->getId());
-
-            $vertex->createEdgeTo($nextVertex);
+            $this->createStateVertex($state);
         }
     }
 
     /**
+     * Map the transitions from state to state
+     *
+     * @return void
+     */
+    private function mapTransitions()
+    {
+        foreach ($this->transitions() as $from => $to)
+        {
+            if (is_array($to))
+            {
+                foreach ($to as $shard)
+                {
+                    $this->createStateTransition($from, $shard);
+                }
+            }
+            else
+            {
+                $this->createStateTransition($from, $to);
+            }
+        }
+    }
+
+    /**
+     * Transition from the current state to another via a valid
+     * edge on the graph.
+     *
      * @param string $state
+     *
+     * @return bool
      */
     public function transition($state)
     {
-        $from = $this->graph->getVertex($this->state->getId());
+        $from = $this->graph->getVertex($this->getCurrentState());
 
         $to = $this->graph->getVertex($state);
-
-//        var_dump($from);
-//        var_dump($to);
-//        var_dump($from->hasEdgeTo($to));
 
         if ($from->hasEdgeTo($to))
         {
             $this->handle('onExit');
 
-            $this->state = $this->states->get($to->getAttribute('state'));
+            $this->state = $to->getAttribute('state');
 
             $this->handle('onEnter');
         }
     }
 
     /**
+     * Handle a method on the current state.
+     *
      * @param $handle
      * @param array $args
      * @return mixed
@@ -129,13 +136,84 @@ abstract class Machine
     }
 
     /**
+     * Get the current state name.
+     *
+     * @return string
+     */
+    public function getCurrentState()
+    {
+        return $this->state->getId();
+    }
+
+    /**
+     * Get a list of all possible state transitions.
+     *
+     * @return array
+     */
+    public function getPossibleTransitions()
+    {
+        return $this->graph->getVertex($this->getCurrentState())
+            ->getVerticesEdgeTo()
+            ->getIds();
+    }
+
+    /**
+     * Get the machines graph instance.
+     *
+     * @return mixed
+     */
+    public function getGraph()
+    {
+        return $this->graph;
+    }
+
+    /**
+     * Create a new state instance from a FQC
+     *
      * @param string $state
      * @return State
      */
-    private function getState($state)
+    private function createNewState($state)
     {
-        $class = '\\'.ltrim($state, '\\');
+        $class = '\\' . ltrim($state, '\\');
 
         return $this->app->make($class);
+    }
+
+    /**
+     * Create a new vertex on the graph for a state
+     *
+     * @param $state
+     *
+     * @return \Fhaculty\Graph\Vertex
+     */
+    private function createStateVertex($state)
+    {
+        $instance = $this->createNewState($state);
+
+        $instance->setMachine($this);
+
+        $vertex = $this->graph->createVertex($instance->getId());
+
+        $vertex->setAttribute('state', $instance);
+
+        $this->states[$state] = $instance;
+
+        return $vertex;
+    }
+
+    /**
+     * Create a new directed edge from one state to another
+     *
+     * @param $from
+     * @param $to
+     *
+     * @return \Fhaculty\Graph\Edge\Directed
+     */
+    private function createStateTransition($from, $to)
+    {
+        $vertex = $this->graph->getVertex($this->states->get($from)->getId());
+
+        return $vertex->createEdgeTo($this->graph->getVertex($this->states->get($to)->getId()));
     }
 }

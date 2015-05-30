@@ -1,5 +1,6 @@
 <?php namespace FSM;
 
+use Fhaculty\Graph\Vertex;
 use FSM\Contracts\MachineDriven;
 
 abstract class State implements MachineDriven
@@ -8,6 +9,16 @@ abstract class State implements MachineDriven
      * @var string
      */
     protected $state;
+
+    /**
+     * @var Vertex
+     */
+    protected $vertex;
+
+    /**
+     * @var Machine
+     */
+    protected $machine;
 
     /**
      * Get the class name or the state attribute as the states name
@@ -30,6 +41,11 @@ abstract class State implements MachineDriven
     public function setMachine(Machine $machine)
     {
         $this->machine = $machine;
+    }
+
+    public function setVertex(Vertex $vertex)
+    {
+        $this->vertex = $vertex;
     }
 
     public function transition($state)

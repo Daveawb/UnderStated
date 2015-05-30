@@ -1,4 +1,4 @@
-<?php namespace Examples;
+<?php namespace Examples\OnOff;
 
 use FSM\Machine;
 
