@@ -1,8 +1,9 @@
 <?php namespace FSM;
 
-use Fhaculty\Graph\Graph;
+use Closure;
+use FSM\Adapters\EventInterface;
+use FSM\Adapters\StructureInterface;
 use Illuminate\Container\Container;
-use Illuminate\Support\Collection;
 
 /**
  * Class Machine
@@ -18,11 +19,11 @@ abstract class Machine
     protected $name;
 
     /**
-     * The state graph
+     * The state structure
      *
-     * @var Graph
+     * @var StructureInterface
      */
-    private $graph;
+    private $structure;
 
     /**
      * The laravel application container.
@@ -32,11 +33,18 @@ abstract class Machine
     private $app;
 
     /**
-     * A collection of state instances.
+     * List of historical transitions
      *
-     * @var Collection
+     * @var array
      */
-    private $states;
+    private $history = [];
+
+    /**
+     * A map of state ids => class names.
+     *
+     * @var array
+     */
+    private $states = [];
 
     /**
      * The active state
@@ -56,19 +64,18 @@ abstract class Machine
      * Construct the machine
      *
      * @param Container $app
-     * @param Graph $graph
-     * @param Collection $states
+     * @param StructureInterface $structure
+     * @param EventInterface $events
      */
-    public function __construct(Container $app, Graph $graph, Collection $states)
+    public function __construct(
+        Container $app,
+        StructureInterface $structure,
+        EventInterface $events
+    )
     {
         $this->app = $app;
-        $this->graph = $graph;
-        $this->states = $states;
-
-        $this->events = $app['events'];
-
-        $this->mapStates();
-        $this->mapTransitions();
+        $this->structure = $structure;
+        $this->events = $events;
 
         if ($this->initial)
         {
@@ -83,14 +90,21 @@ abstract class Machine
      */
     public function initialise($state = null)
     {
+        if (count($this->states) <= 0 )
+        {
+            $this->mapStates();
+            $this->mapTransitions();
+        }
+
         if ( ! $state )
         {
-            $this->state = $this->states->first();
+            reset($this->states);
+
+            $this->state = key($this->states);
         }
         else
         {
-            $this->state = $this->graph->getVertex($state)
-                ->getAttribute('state');
+            $this->state = $this->structure->getState($state);
         }
 
         $this->handle('onEnter');
@@ -111,7 +125,7 @@ abstract class Machine
     abstract public function transitions();
 
     /**
-     * Map the states to the graph
+     * Map the states to the structure
      *
      * @return void
      */
@@ -119,7 +133,7 @@ abstract class Machine
     {
         foreach ($this->states() as $state)
         {
-            $this->createStateVertex($state);
+            $this->createState($state);
         }
     }
 
@@ -136,12 +150,12 @@ abstract class Machine
             {
                 foreach ($to as $shard)
                 {
-                    $this->createStateTransition($from, $shard);
+                    $this->createTransition($from, $shard);
                 }
             }
             else
             {
-                $this->createStateTransition($from, $to);
+                $this->createTransition($from, $to);
             }
         }
     }
@@ -157,22 +171,29 @@ abstract class Machine
      */
     public function transition($state, $args = [])
     {
-        $from = $this->state->getVertex();
-
-        $to = $this->graph->getVertex($state);
-
-        if ($from->hasEdgeTo($to))
+        if ($this->structure->canTransitionFrom($id = $this->getStateId(), $state))
         {
-            if ($this->handle('onExit', $args) !== false)
+            if ( $this->handle('onExit', $args) )
             {
-                $this->state = $to->getAttribute('state');
+                array_push($this->history, $id);
 
-                if ($this->handle('onEnter', $args) === false)
+                $this->state = $this->structure->getState($state);
+
+                if ( $this->handle('onEnter', $args) )
                 {
-                    $this->state = $from;
-                }
+                    $this->emit('transition', [
+                        $this->structure->getState(last($this->history)),
+                        $this->state]
+                    );
 
-                $this->emit('transition', [$from->getAttribute('state'), $this->state]);
+                    reset($this->history);
+                }
+                else
+                {
+                    $this->state = $this->structure->getState(
+                        array_splice($this->history, -1, 1)[0]
+                    );
+                }
             }
         }
     }
@@ -182,14 +203,17 @@ abstract class Machine
      *
      * @param $handle
      * @param array $args
+     * @param bool $result
      * @return mixed|void
      */
-    public function handle($handle, $args = [])
+    public function handle($handle, $args = [], $result = true)
     {
         if (method_exists($this->state, $handle))
         {
-            return call_user_func_array([$this->state, $handle], $args);
+            $result = call_user_func_array([$this->state, $handle], $args);
         }
+
+        return is_bool($result) ? $result : true;
     }
 
     /**
@@ -197,7 +221,7 @@ abstract class Machine
      *
      * @return string
      */
-    public function getCurrentStateId()
+    public function getStateId()
     {
         return $this->state->getId();
     }
@@ -207,7 +231,7 @@ abstract class Machine
      *
      * @return State
      */
-    public function getCurrentState()
+    public function getState()
     {
         return $this->state;
     }
@@ -219,19 +243,17 @@ abstract class Machine
      */
     public function getPossibleTransitions()
     {
-        return $this->graph->getVertex($this->getCurrentStateId())
-            ->getVerticesEdgeTo()
-            ->getIds();
+        return $this->structure->getTransitionsFrom($this->getStateId());
     }
 
     /**
-     * Get the machines graph instance.
+     * Get the machines structure instance.
      *
      * @return mixed
      */
-    public function getGraph()
+    public function getStructure()
     {
-        return $this->graph;
+        return $this->structure;
     }
 
     /**
@@ -247,55 +269,49 @@ abstract class Machine
     }
 
     /**
+     * Apply the state to the structure
+     *
+     * @param string $stateClass
+     */
+    private function createState($stateClass)
+    {
+        $state = $this->newState($stateClass);
+
+        $state->setMachine($this);
+
+        $this->structure->setState($id = $state->getId(), $state);
+
+        $this->states[$id] = $stateClass;
+    }
+
+    /**
      * Create a new state instance from a FQC
      *
-     * @param string $state
+     * @param string $stateClass
      * @return State
      */
-    private function createNewState($state)
+    private function newState($stateClass)
     {
-        $class = '\\' . ltrim($state, '\\');
+        $class = '\\' . ltrim($stateClass, '\\');
 
         return $this->app->make($class);
     }
 
     /**
-     * Create a new vertex on the graph for a state
-     *
-     * @param $state
-     *
-     * @return \Fhaculty\Graph\Vertex
-     */
-    private function createStateVertex($state)
-    {
-        $instance = $this->createNewState($state);
-
-        $vertex = $this->graph->createVertex($instance->getId());
-
-        $instance->setMachine($this);
-
-        $instance->setVertex($vertex);
-
-        $vertex->setAttribute('state', $instance);
-
-        $this->states[$state] = $instance;
-
-        return $vertex;
-    }
-
-    /**
      * Create a new directed edge from one state to another
      *
-     * @param $from
-     * @param $to
+     * @param string $from
+     * @param string $to
      *
      * @return \Fhaculty\Graph\Edge\Directed
      */
-    private function createStateTransition($from, $to)
+    private function createTransition($from, $to)
     {
-        $vertex = $this->graph->getVertex($this->states->get($from)->getId());
+        $from = array_keys($this->states, $from);
 
-        return $vertex->createEdgeTo($this->graph->getVertex($this->states->get($to)->getId()));
+        $to = array_keys($this->states, $to);
+
+        return $this->structure->createTransitionTo($from[0], $to[0]);
     }
 
     /**
@@ -306,6 +322,17 @@ abstract class Machine
      */
     public function emit($type, $args = [])
     {
-        $this->events->fire("{$this->getName()}.{$type}", $args);
+        array_unshift($args, $this, $this->state);
+
+        $this->events->emit("{$this->getName()}.{$type}", $args);
+    }
+
+    /**
+     * @param $type
+     * @param callable $closure
+     */
+    public function listen($type, Closure $closure)
+    {
+        $this->events->listen("{$this->getName()}.{$type}", $closure);
     }
 }

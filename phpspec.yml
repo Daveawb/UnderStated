@@ -3,7 +3,13 @@ suites:
         namespace: Examples
         psr4_prefix: Examples
         src_path : examples
-        spec_path : tests
+        spec_path : tests/examples
+    src:
+        namespace: FSM
+        psr4_prefix: FSM
+        src_path : src
+        spec_path : tests/fsm
+
 extensions:
     - PhpSpec\NyanFormattersExtension\Extension
 formatter.name: nyan.cat

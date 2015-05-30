@@ -2,8 +2,14 @@
 
 use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
+use Fhaculty\Graph\Graph;
+use FSM\Adapters\EventInterface;
+use FSM\Adapters\GraphStructure;
+use FSM\Adapters\LaravelEvents;
+use FSM\Adapters\StructureInterface;
 use FSM\Machine;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Events\EventServiceProvider;
 
 trait ApplicationTrait {
@@ -34,6 +40,21 @@ trait ApplicationTrait {
 
         $events = new EventServiceProvider(static::$app);
         $events->register();
+
+        static::$app->bind(Dispatcher::class, function($app)
+        {
+            return $app['events'];
+        });
+
+        static::$app->bind(StructureInterface::class, function($app)
+        {
+            return $app->make(GraphStructure::class);
+        });
+
+        static::$app->bind(EventInterface::class, function($app)
+        {
+            return $app->make(LaravelEvents::class);
+        });
     }
 
     /**
@@ -57,7 +78,7 @@ trait ApplicationTrait {
      */
     public function theStateShouldBe($state)
     {
-        $fsmState = $this->fsm->getCurrentStateId();
+        $fsmState = $this->fsm->getStateId();
 
         if ($fsmState !== $state)
         {
