@@ -5,6 +5,11 @@ use FSM\Machine;
 class FSM extends Machine
 {
     /**
+     * @var
+     */
+    protected $initial = 'off';
+
+    /**
      * @return array
      */
     public function states()

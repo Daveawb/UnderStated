@@ -26,6 +26,13 @@ abstract class Machine
     private $states;
 
     /**
+     * The initial state
+     *
+     * @var string
+     */
+    protected $initial;
+
+    /**
      * Construct the machine
      *
      * @param Container $app
@@ -41,7 +48,28 @@ abstract class Machine
         $this->mapStates();
         $this->mapTransitions();
 
-        $this->state = $this->states->first();
+        if ($this->initial)
+        {
+            $this->initialise($this->initial);
+        }
+    }
+
+    /**
+     * Set the initial state manually
+     *
+     * @param $state
+     */
+    public function initialise($state = null)
+    {
+        if ( ! $state )
+        {
+            $this->state = $this->states->first();
+        }
+        else
+        {
+            $this->state = $this->graph->getVertex($state)
+                ->getAttribute('state');
+        }
 
         $this->handle('onEnter');
     }
@@ -112,11 +140,15 @@ abstract class Machine
 
         if ($from->hasEdgeTo($to))
         {
-            $this->handle('onExit');
+            if ($this->handle('onExit') !== false)
+            {
+                $this->state = $to->getAttribute('state');
 
-            $this->state = $to->getAttribute('state');
-
-            $this->handle('onEnter');
+                if ($this->handle('onEnter') === false)
+                {
+                    $this->state = $from;
+                }
+            }
         }
     }
 
@@ -131,7 +163,7 @@ abstract class Machine
     {
         if (method_exists($this->state, $handle))
         {
-            call_user_func_array([$this->state, $handle], $args);
+            return call_user_func_array([$this->state, $handle], $args);
         }
     }
 

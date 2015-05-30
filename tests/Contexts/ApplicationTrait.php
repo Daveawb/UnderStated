@@ -35,7 +35,7 @@ trait ApplicationTrait {
     }
 
     /**
-     * @Given /^I run handle "([^"]*)"$/
+     * @Given /^I run handle (.*)$/
      */
     public function iRunHandle($handle)
     {
@@ -43,7 +43,7 @@ trait ApplicationTrait {
     }
 
     /**
-     * @Then /^The state should be "([^"]*)"$/
+     * @Then /^The state should be (.*)$/
      */
     public function theStateShouldBe($state)
     {
@@ -81,11 +81,20 @@ trait ApplicationTrait {
     }
 
     /**
-     * @When /^I transition to "([^"]*)"$/
+     * @When /^I transition to (.*)$/
      */
     public function iTransitionTo($transition)
     {
         $this->fsm->transition($transition);
     }
+
+    /**
+     * @Given /^Initial state is (.*)$/
+     */
+    public function initialStateIs($initial_state)
+    {
+        $this->fsm->initialise($initial_state);
+    }
+
 
 }
