@@ -1,8 +1,8 @@
 suites:
     main:
-        namespace: FSM
-        psr4_prefix: FSM
-        src_path : src
+        namespace: Examples
+        psr4_prefix: Examples
+        src_path : examples
         spec_path : tests
 extensions:
     - PhpSpec\NyanFormattersExtension\Extension

@@ -8,3 +8,6 @@ default:
       whenready:
         paths : [%paths.base%/tests/Features/WhenReady]
         contexts: [Contexts\WhenReady\FsmContext]
+      whenreadyhandler:
+        paths : [%paths.base%/tests/Features/WhenReadyHandler]
+        contexts: [Contexts\WhenReadyHandler\FsmContext]

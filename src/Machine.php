@@ -11,19 +11,39 @@ use Illuminate\Support\Collection;
 abstract class Machine
 {
     /**
-     * @var
+     * The name of the state machine
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
+     * The state graph
+     *
+     * @var Graph
      */
     private $graph;
 
     /**
+     * The laravel application container.
+     *
      * @var Container
      */
     private $app;
 
     /**
+     * A collection of state instances.
+     *
      * @var Collection
      */
     private $states;
+
+    /**
+     * The active state
+     *
+     * @var State
+     */
+    private $state;
 
     /**
      * The initial state
@@ -44,6 +64,8 @@ abstract class Machine
         $this->app = $app;
         $this->graph = $graph;
         $this->states = $states;
+
+        $this->events = $app['events'];
 
         $this->mapStates();
         $this->mapTransitions();
@@ -130,24 +152,27 @@ abstract class Machine
      *
      * @param string $state
      *
+     * @param array $args
      * @return bool
      */
-    public function transition($state)
+    public function transition($state, $args = [])
     {
-        $from = $this->graph->getVertex($this->getCurrentState());
+        $from = $this->state->getVertex();
 
         $to = $this->graph->getVertex($state);
 
         if ($from->hasEdgeTo($to))
         {
-            if ($this->handle('onExit') !== false)
+            if ($this->handle('onExit', $args) !== false)
             {
                 $this->state = $to->getAttribute('state');
 
-                if ($this->handle('onEnter') === false)
+                if ($this->handle('onEnter', $args) === false)
                 {
                     $this->state = $from;
                 }
+
+                $this->emit('transition', [$from->getAttribute('state'), $this->state]);
             }
         }
     }
@@ -157,7 +182,7 @@ abstract class Machine
      *
      * @param $handle
      * @param array $args
-     * @return mixed
+     * @return mixed|void
      */
     public function handle($handle, $args = [])
     {
@@ -168,13 +193,23 @@ abstract class Machine
     }
 
     /**
-     * Get the current state name.
+     * Get the current state id.
      *
      * @return string
      */
-    public function getCurrentState()
+    public function getCurrentStateId()
     {
         return $this->state->getId();
+    }
+
+    /**
+     * Get the current state instance
+     *
+     * @return State
+     */
+    public function getCurrentState()
+    {
+        return $this->state;
     }
 
     /**
@@ -184,7 +219,7 @@ abstract class Machine
      */
     public function getPossibleTransitions()
     {
-        return $this->graph->getVertex($this->getCurrentState())
+        return $this->graph->getVertex($this->getCurrentStateId())
             ->getVerticesEdgeTo()
             ->getIds();
     }
@@ -197,6 +232,18 @@ abstract class Machine
     public function getGraph()
     {
         return $this->graph;
+    }
+
+    /**
+     * Get the machines name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        if (isset($this->name)) return $this->name;
+
+        return $this->name = str_replace('\\', '', strtolower(class_basename($this)));
     }
 
     /**
@@ -223,9 +270,11 @@ abstract class Machine
     {
         $instance = $this->createNewState($state);
 
+        $vertex = $this->graph->createVertex($instance->getId());
+
         $instance->setMachine($this);
 
-        $vertex = $this->graph->createVertex($instance->getId());
+        $instance->setVertex($vertex);
 
         $vertex->setAttribute('state', $instance);
 
@@ -247,5 +296,16 @@ abstract class Machine
         $vertex = $this->graph->getVertex($this->states->get($from)->getId());
 
         return $vertex->createEdgeTo($this->graph->getVertex($this->states->get($to)->getId()));
+    }
+
+    /**
+     * Emit an event
+     *
+     * @param $type
+     * @param array $args
+     */
+    public function emit($type, $args = [])
+    {
+        $this->events->fire("{$this->getName()}.{$type}", $args);
     }
 }

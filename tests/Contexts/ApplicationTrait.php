@@ -1,8 +1,10 @@
 <?php namespace Contexts;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
 use FSM\Machine;
 use Illuminate\Container\Container;
+use Illuminate\Events\EventServiceProvider;
 
 trait ApplicationTrait {
 
@@ -24,6 +26,14 @@ trait ApplicationTrait {
         require_once __DIR__ . '/../../vendor/autoload.php';
 
         static::$app = new Container();
+
+        static::$app->bind(Container::class, function($app)
+        {
+            return $app;
+        });
+
+        $events = new EventServiceProvider(static::$app);
+        $events->register();
     }
 
     /**
@@ -47,7 +57,7 @@ trait ApplicationTrait {
      */
     public function theStateShouldBe($state)
     {
-        $fsmState = $this->fsm->getCurrentState();
+        $fsmState = $this->fsm->getCurrentStateId();
 
         if ($fsmState !== $state)
         {
@@ -95,6 +105,4 @@ trait ApplicationTrait {
     {
         $this->fsm->initialise($initial_state);
     }
-
-
 }

@@ -21,9 +21,29 @@ abstract class State implements MachineDriven
     protected $machine;
 
     /**
+     * @param Machine $machine
+     * @return void
+     */
+    public function setMachine(Machine $machine)
+    {
+        $this->machine = $machine;
+    }
+
+    /**
+     * Set the graph vertex for this state.
+     *
+     * @param Vertex $vertex
+     * @return void
+     */
+    public function setVertex(Vertex $vertex)
+    {
+        $this->vertex = $vertex;
+    }
+
+    /**
      * Get the class name or the state attribute as the states name
      *
-     * @return mixed
+     * @return string
      */
     public function getId()
     {
@@ -35,25 +55,33 @@ abstract class State implements MachineDriven
     }
 
     /**
-     * @param Machine $machine
-     * @return void
+     * Get the graph vertex associated with this state
+     *
+     * @return Vertex
      */
-    public function setMachine(Machine $machine)
+    public function getVertex()
     {
-        $this->machine = $machine;
+        return $this->vertex;
     }
 
-    public function setVertex(Vertex $vertex)
+    /**
+     * Helper function to transition to a new state.
+     *
+     * @param string $state
+     * @param array  $args
+     */
+    public function transition($state, $args = [])
     {
-        $this->vertex = $vertex;
+        $this->machine->transition($state, $args);
     }
 
-    public function transition($state)
-    {
-        $this->machine->transition($state);
-    }
-
-    public function handle($handle, $args)
+    /**
+     * Helper function to handle a state method.
+     *
+     * @param string $handle
+     * @param array  $args
+     */
+    public function handle($handle, $args = [])
     {
         $this->machine->handle($handle, $args);
     }
