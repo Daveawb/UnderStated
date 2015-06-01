@@ -16,18 +16,22 @@ class StateFactory
      */
     public function create($id, $resolvable = null)
     {
-        if (func_num_args() === 1)
+        if (func_num_args() === 1) {
             $resolvable = func_get_arg(0);
+            $id = null;
+        }
 
         if ($resolvable instanceof State)
             return $resolvable;
 
         if ($resolvable instanceof Closure)
-            return $this->closureState($resolvable);
+            $state = $this->closureState($resolvable);
 
-        $state = $this->getStateFromClass($resolvable);
+        else
+            $state = $this->getStateFromClass($resolvable);
 
-        $state->setId($id);
+        if ($id)
+            $state->setId($id);
 
         return $state;
     }

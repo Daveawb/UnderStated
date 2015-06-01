@@ -15,10 +15,11 @@ class Director
         return $builder->create()
             ->state('on', function($state)
             {
-                $state->transition('off');
+                // It's on.
             })
-            ->state('off', function($state) {
-                // It's off now
+            ->state('off', function($state)
+            {
+                // It's off.
             })
             ->transition('on', 'off')
             ->get(true);
