@@ -49,6 +49,11 @@ class StateSpec extends ObjectBehavior
         $this->getVertex($vertex)->shouldReturn($vertex);
     }
 
+    function it_should_get_bound_state_events()
+    {
+        $this->getBoundEvents()->shouldReturn([]);
+    }
+
     function it_should_transition_to_another_state(Machine $machine)
     {
         $machine->transition('nextstate', ['arg'])->shouldBeCalled();
@@ -86,5 +91,34 @@ class StateSpec extends ObjectBehavior
     function it_should_return_null_on_invalid_handle_call()
     {
         $this->myNonExistantHandler()->shouldReturn(null);
+    }
+
+    function it_should_emit_events(Machine $machine)
+    {
+        $machine->emit('event', [])->shouldBeCalled();
+
+        $this->setMachine($machine);
+
+        $this->emit('event');
+    }
+
+    function it_should_register_event_listeners(Machine $machine)
+    {
+        $closure = function() {};
+
+        $machine->listen('event', $closure)->shouldBeCalled();
+
+        $this->setMachine($machine);
+
+        $this->listen('event', $closure);
+    }
+
+    function it_should_unbind_event_listeners(Machine $machine)
+    {
+        $machine->forget('event')->shouldBeCalled();
+
+        $this->setMachine($machine);
+
+        $this->forget('event');
     }
 }

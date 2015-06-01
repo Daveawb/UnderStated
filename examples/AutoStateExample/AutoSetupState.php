@@ -25,9 +25,10 @@ class AutoSetupState extends State {
      * method. This will run through all the constraints and
      * run their handlers and finally transitioning to ready.
      *
+     * @param State $state
      * @return bool
      */
-    public function onEnter()
+    public function onEnter(State $state)
     {
         $this->checkReady();
     }
@@ -86,9 +87,10 @@ class AutoSetupState extends State {
      * Stop accidental transition out of this state without pre-conditions
      * having been met.
      *
+     * @param State $state
      * @return bool
      */
-    public function onExit()
+    public function onExit(State $state)
     {
         return count(array_keys($this->constraints, true)) === count($this->constraints);
     }

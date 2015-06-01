@@ -34,6 +34,11 @@ class State implements MachineDriven
     protected $closures = [];
 
     /**
+     * @var array
+     */
+    protected $boundEvents = [];
+
+    /**
      * @param Machine $machine
      *
      * @return void
@@ -98,6 +103,16 @@ class State implements MachineDriven
     }
 
     /**
+     * Get the bound events on the state
+     *
+     * @return array
+     */
+    public function getBoundEvents()
+    {
+        return $this->boundEvents;
+    }
+
+    /**
      * Helper function to transition to a new state.
      *
      * @param string $state
@@ -119,6 +134,36 @@ class State implements MachineDriven
     public function handle($handle, $args = [])
     {
         return $this->machine->handle($handle, $args);
+    }
+
+    /**
+     * @param $event
+     * @param array $args
+     */
+    public function emit($event, $args = [])
+    {
+        $this->machine->emit($event, $args);
+    }
+
+    /**
+     * @param $event
+     * @param $callback
+     */
+    public function listen($event, $callback)
+    {
+        $this->boundEvents[] = $event;
+
+        $this->machine->listen($event, $callback);
+    }
+
+    /**
+     * Forget bound events
+     *
+     * @param $events
+     */
+    public function forget($events)
+    {
+        $this->machine->forget($events);
     }
 
     /**

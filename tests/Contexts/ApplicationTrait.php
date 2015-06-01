@@ -91,6 +91,14 @@ trait ApplicationTrait {
     }
 
     /**
+     * @When /^An event (.*) is emitted$/
+     */
+    public function anEventIsEmitted($event)
+    {
+        $this->fsm->emit($event, []);
+    }
+
+    /**
      * @param $class
      * @return mixed
      */

@@ -42,6 +42,7 @@ class MachineSpec extends ObjectBehavior
 
         $this->getId()->shouldReturn('id');
     }
+
     function it_should_set_a_structure(StructureInterface $interface)
     {
         $this->setStructure($interface);
@@ -66,6 +67,11 @@ class MachineSpec extends ObjectBehavior
         $this->getState()->shouldReturn($state);
     }
 
+    function it_should_get_state_history()
+    {
+        $this->getHistory()->shouldReturn([]);
+    }
+
     function it_should_initialise(GraphStructure $structure, State $state)
     {
         $state->onEnter($state)->shouldBeCalled()->willReturn(true);
@@ -82,6 +88,7 @@ class MachineSpec extends ObjectBehavior
         $state->getId()->shouldBecalled()->willReturn('state');
         $state->onExit($state)->shouldBeCalled()->willReturn(true);
         $state->onEnter($state)->shouldBeCalled()->willReturn(true);
+        $state->getBoundEvents()->shouldBeCalled()->willReturn([]);
 
         $this->setState($state);
 
@@ -111,5 +118,12 @@ class MachineSpec extends ObjectBehavior
     function it_should_register_event_listeners()
     {
         $this->listen('transition', function() {});
+    }
+
+    function it_should_forget_event_listeners()
+    {
+        $this->forget('event');
+
+        $this->forget(['event1', 'event2']);
     }
 }

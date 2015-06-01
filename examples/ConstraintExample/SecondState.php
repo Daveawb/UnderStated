@@ -4,7 +4,11 @@ use FSM\States\State;
 
 class SecondState extends State {
 
-    public function onEnter()
+    /**
+     * @param State $state
+     * @return bool|void
+     */
+    public function onEnter(State $state)
     {
         $this->machine->unGuard('second');
 

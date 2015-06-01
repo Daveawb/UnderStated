@@ -14,3 +14,6 @@ default:
       Closure:
         paths : [%paths.base%/tests/Features/Closure]
         contexts: [Contexts\FsmContext]
+      Events:
+        paths : [%paths.base%/tests/Features/Events]
+        contexts: [Contexts\FsmContext]

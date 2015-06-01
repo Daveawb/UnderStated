@@ -17,4 +17,10 @@ interface EventInterface
      * @return mixed
      */
     public function emit($name, $args = []);
+
+    /**
+     * @param $names
+     * @return mixed
+     */
+    public function forget($names);
 }

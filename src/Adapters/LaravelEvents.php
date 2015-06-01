@@ -38,4 +38,13 @@ class LaravelEvents implements EventInterface
     {
         $this->dispatcher->fire($name, $args);
     }
+
+    /**
+     * @param $names
+     * @return mixed
+     */
+    public function forget($names)
+    {
+        $this->dispatcher->forget($names);
+    }
 }

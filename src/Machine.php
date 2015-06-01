@@ -67,31 +67,32 @@ class Machine
      * edge on the graph.
      *
      * @param string $state
-     * @param array $args
      * @return bool
      * @throws UninitialisedException
      */
-    public function transition($state, $args = [])
+    public function transition($state)
     {
         if ( ! $this->state )
             throw new UninitialisedException('FSM is not initialised.');
 
         if ($this->structure->canTransitionFrom($id = $this->getState()->getId(), $state))
         {
-            if ( $this->handle('onExit', $args) )
+            if ( $this->execHandle('onExit', [$next = $this->structure->getState($state)]) )
             {
                 array_push($this->history, $id);
 
-                $this->setState($this->structure->getState($state));
+                $this->setState($next);
 
-                if ( $this->handle('onEnter', $args) )
+                if ( $this->execHandle('onEnter', [$from = $this->structure->getState($id)]) )
                 {
+                    // Remove all the bound events from the previous state
+                    $this->forget($from->getBoundEvents());
+
+                    // Emit a transition event
                     $this->emit('transition', [
-                        $this->structure->getState(last($this->history)),
+                        $from,
                         $this->state
                     ]);
-
-                    reset($this->history);
                 }
                 else
                 {
@@ -108,22 +109,48 @@ class Machine
      *
      * @param $handle
      * @param array $args
-     * @param bool $result
+     *
      * @return mixed|void
+     *
      * @throws UninitialisedException
      */
-    public function handle($handle, $args = [], $result = true)
+    public function handle($handle, $args = [])
     {
         if ( ! $this->state )
             throw new UninitialisedException('FSM is not initialised.');
 
         array_unshift($args, $this->state);
 
+        $data = $this->execHandle($handle, $args);
+
+        $this->emit("handled.{$handle}", [$this->state, $data]);
+
+        return $data;
+    }
+
+    /**
+     * Execute the handler on the state
+     *
+     * @param $handle
+     * @param array $args
+     *
+     * @return mixed
+     */
+    protected function execHandle($handle, $args = [])
+    {
         $result = call_user_func_array([$this->state, $handle], $args);
 
-        $this->emit("handled.{$handle}", [$this->state, $result]);
+        return is_null($result) ? : $result;
+    }
 
-        return is_bool($result) ? $result : true;
+    /**
+     * Get the history array
+     *
+     * @return array
+     */
+    public function getHistory()
+    {
+        return $this->history;
     }
 
     /**
@@ -205,7 +232,7 @@ class Machine
      */
     public function emit($type, $args = [])
     {
-        array_unshift($args, $this, $this->state);
+        array_unshift($args, $this);
 
         $this->events->emit("{$this->getId()}.{$type}", $args);
     }
@@ -217,5 +244,13 @@ class Machine
     public function listen($type, Closure $closure)
     {
         $this->events->listen("{$this->getId()}.{$type}", $closure);
+    }
+
+    /**
+     * @param $events
+     */
+    public function forget($events)
+    {
+        $this->events->forget($events);
     }
 }

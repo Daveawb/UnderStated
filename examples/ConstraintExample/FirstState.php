@@ -2,9 +2,13 @@
 
 use FSM\States\State;
 
-class FirstState extends State {
-
-    public function onEnter()
+class FirstState extends State
+{
+    /**
+     * @param State $state
+     * @return bool|void
+     */
+    public function onEnter(State $state)
     {
         $this->machine->unGuard('first');
 
