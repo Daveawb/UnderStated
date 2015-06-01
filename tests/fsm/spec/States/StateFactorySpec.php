@@ -14,15 +14,14 @@ class StateFactorySpec extends ObjectBehavior
         $this->shouldHaveType('UnderStated\States\StateFactory');
     }
 
-    function it_does_not_create_a_closure_state()
-    {
-        $this->shouldThrow(StateException::class)->during('create', [function() { return 'test'; }]);
-//        $this->create(function() { return 'test'; })->shouldBeAnInstanceOf(State::class);
-    }
-
     function it_creates_a_closure_state_with_an_id()
     {
         $this->create('test', function() { return 'test'; })->shouldBeAnInstanceOf(State::class);
+    }
+
+    function it_does_not_create_a_closure_state_with_no_id()
+    {
+        $this->shouldThrow(StateException::class)->during('create', [function() { return 'test'; }]);
     }
 
     function it_creates_a_state_from_a_class_name()
