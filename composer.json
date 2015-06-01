@@ -1,6 +1,7 @@
 {
   "name": "daveawb/understated",
-  "description": "A PHP Finite State Machine ",
+  "description": "A PHP Finite State Machine for Laravel 5+",
+  "keywords": ["laravel", "fsm", "states"],
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
