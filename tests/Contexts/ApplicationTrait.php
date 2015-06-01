@@ -1,8 +1,8 @@
 <?php namespace Contexts;
 
 use Behat\Gherkin\Node\TableNode;
-use FSM\Builders\GraphBuilder;
-use FSM\Machine;
+use UnderStated\Builders\GraphBuilder;
+use UnderStated\Machine;
 use Illuminate\Container\Container;
 
 trait ApplicationTrait {

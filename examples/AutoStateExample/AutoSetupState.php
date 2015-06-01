@@ -1,6 +1,6 @@
-<?php namespace Examples\AutoStateExample;
+<?php namespace UnderStated\Examples\AutoStateExample;
 
-use FSM\States\State;
+use UnderStated\States\State;
 
 /**
  * Class AutoSetupState

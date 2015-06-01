@@ -1,9 +1,9 @@
 <?php
 
-use FSM\Adapters\GraphStructure;
-use FSM\Adapters\LaravelEvents;
-use FSM\Contracts\EventInterface;
-use FSM\Contracts\StructureInterface;
+use UnderStated\Adapters\GraphStructure;
+use UnderStated\Adapters\LaravelEvents;
+use UnderStated\Contracts\EventInterface;
+use UnderStated\Contracts\StructureInterface;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Events\EventServiceProvider;

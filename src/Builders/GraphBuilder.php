@@ -1,10 +1,10 @@
-<?php namespace FSM\Builders;
+<?php namespace UnderStated\Builders;
 
 use Fhaculty\Graph\Graph;
-use FSM\Adapters\GraphStructure;
-use FSM\Contracts\MachineBuilder;
-use FSM\Machine;
-use FSM\States\StateFactory;
+use UnderStated\Adapters\GraphStructure;
+use UnderStated\Contracts\MachineBuilder;
+use UnderStated\Machine;
+use UnderStated\States\StateFactory;
 
 class GraphBuilder implements MachineBuilder
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\FSM\States;
+namespace spec\UnderStated\States;
 
-use FSM\States\State;
+use UnderStated\States\State;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -10,7 +10,7 @@ class StateFactorySpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('FSM\States\StateFactory');
+        $this->shouldHaveType('UnderStated\States\StateFactory');
     }
 
     function it_creates_a_closure_state()

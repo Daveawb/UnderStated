@@ -1,15 +1,14 @@
 <?php
 
-namespace spec\FSM;
+namespace spec\UnderStated;
 
-use FSM\Adapters\GraphStructure;
-use FSM\Contracts\EventInterface;
-use FSM\Contracts\StructureInterface;
-use FSM\Exceptions\UninitialisedException;
-use FSM\States\State;
+use UnderStated\Adapters\GraphStructure;
+use UnderStated\Contracts\EventInterface;
+use UnderStated\Contracts\StructureInterface;
+use UnderStated\Exceptions\UninitialisedException;
+use UnderStated\States\State;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Symfony\Component\EventDispatcher\Event;
 
 class MachineSpec extends ObjectBehavior
 {
@@ -20,7 +19,7 @@ class MachineSpec extends ObjectBehavior
 
     function it_is_initializable()
     {
-        $this->shouldHaveType('FSM\Machine');
+        $this->shouldHaveType('UnderStated\Machine');
     }
 
     function it_should_throw_uninitialised_exception()

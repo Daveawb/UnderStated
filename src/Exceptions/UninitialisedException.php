@@ -1,4 +1,4 @@
-<?php namespace FSM\Exceptions;
+<?php namespace UnderStated\Exceptions;
 
 class UninitialisedException extends \Exception {
 

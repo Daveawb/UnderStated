@@ -1,6 +1,6 @@
-<?php namespace Examples\OnOffExample;
+<?php namespace UnderStated\Examples\OnOffExample;
 
-use FSM\States\State;
+use UnderStated\States\State;
 
 class OnState extends State
 {

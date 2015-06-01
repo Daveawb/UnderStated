@@ -1,9 +1,9 @@
 <?php
 
-namespace spec\FSM\States;
+namespace spec\UnderStated\States;
 
 use Fhaculty\Graph\Vertex;
-use FSM\Machine;
+use UnderStated\Machine;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -11,7 +11,7 @@ class StateSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('FSM\States\State');
+        $this->shouldHaveType('UnderStated\States\State');
     }
 
     function it_should_set_an_id()

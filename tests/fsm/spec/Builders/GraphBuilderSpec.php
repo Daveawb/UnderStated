@@ -1,8 +1,8 @@
 <?php
 
-namespace spec\FSM\Builders;
+namespace spec\UnderStated\Builders;
 
-use FSM\Machine;
+use UnderStated\Machine;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -10,7 +10,7 @@ class GraphBuilderSpec extends ObjectBehavior
 {
     function it_is_initializable()
     {
-        $this->shouldHaveType('FSM\Builders\GraphBuilder');
+        $this->shouldHaveType('UnderStated\Builders\GraphBuilder');
     }
 
     function it_creates_a_new_machine(Machine $machine)

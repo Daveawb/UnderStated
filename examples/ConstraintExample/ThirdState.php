@@ -1,6 +1,6 @@
-<?php namespace Examples\ConstraintExample;
+<?php namespace UnderStated\Examples\ConstraintExample;
 
-use FSM\States\State;
+use UnderStated\States\State;
 
 class ThirdState extends State
 {

@@ -1,4 +1,4 @@
-<?php namespace FSM\Contracts;
+<?php namespace UnderStated\Contracts;
 
 
 interface EventInterface

@@ -1,9 +1,9 @@
-<?php namespace FSM;
+<?php namespace UnderStated;
 
-use FSM\Contracts\EventInterface;
-use FSM\Contracts\StructureInterface;
-use FSM\Exceptions\UninitialisedException;
-use FSM\States\State;
+use UnderStated\Contracts\EventInterface;
+use UnderStated\Contracts\StructureInterface;
+use UnderStated\Exceptions\UninitialisedException;
+use UnderStated\States\State;
 
 /**
  * Class Machine

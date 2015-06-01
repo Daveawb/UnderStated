@@ -1,7 +1,7 @@
-Feature:The FSM should not transition to ready until preconditions are met
+Feature:The UnderStated should not transition to ready until preconditions are met
 
   Scenario: States should have edges to other states
-    Given I have a director Examples/ConstraintExample/Director instance
+    Given I have a director UnderStated/Examples/ConstraintExample/Director instance
     Then Initial state is first
     And Possible transitions should be
       | second | third | ready |
@@ -12,7 +12,7 @@ Feature:The FSM should not transition to ready until preconditions are met
     And The state should be ready
 
   Scenario Outline: It should not transition to ready until all required states are visited
-    Given I have a director Examples/ConstraintExample/Director instance
+    Given I have a director UnderStated/Examples/ConstraintExample/Director instance
     And Initial state is <initial_state>
     When I transition to <second_state>
     Then The state should be <second_state>
@@ -28,7 +28,7 @@ Feature:The FSM should not transition to ready until preconditions are met
     | first         | second       | first       | first          |
 
   Scenario Outline: It should not manually transition to "ready" if pre-conditions are not met
-    Given I have a director Examples/ConstraintExample/Director instance
+    Given I have a director UnderStated/Examples/ConstraintExample/Director instance
     And Initial state is <state>
     When I transition to ready
     Then The state should be <state>

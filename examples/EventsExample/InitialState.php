@@ -1,8 +1,6 @@
-<?php
+<?php namespace UnderStated\Examples\EventsExample;
 
-namespace Examples\EventsExample;
-
-use FSM\States\State;
+use UnderStated\States\State;
 
 class InitialState extends State
 {

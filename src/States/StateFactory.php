@@ -1,4 +1,4 @@
-<?php namespace FSM\States;
+<?php namespace UnderStated\States;
 
 use Closure;
 

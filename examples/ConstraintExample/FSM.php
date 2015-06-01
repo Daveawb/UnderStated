@@ -1,6 +1,6 @@
-<?php namespace Examples\ConstraintExample;
+<?php namespace UnderStated\Examples\ConstraintExample;
 
-use FSM\Machine;
+use UnderStated\Machine;
 
 class FSM extends Machine
 {

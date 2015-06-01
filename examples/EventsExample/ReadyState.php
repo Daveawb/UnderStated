@@ -1,6 +1,6 @@
-<?php namespace Examples\EventsExample;
+<?php namespace UnderStated\Examples\EventsExample;
 
-use FSM\States\State;
+use UnderStated\States\State;
 
 class ReadyState extends State
 {

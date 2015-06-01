@@ -1,10 +1,9 @@
-<?php namespace FSM\States;
+<?php namespace UnderStated\States;
 
 use Closure;
 use Fhaculty\Graph\Vertex;
-use FSM\Contracts\MachineDriven;
-use FSM\Exceptions\InvalidStateMethodException;
-use FSM\Machine;
+use UnderStated\Contracts\MachineDriven;
+use UnderStated\Machine;
 
 class State implements MachineDriven
 {

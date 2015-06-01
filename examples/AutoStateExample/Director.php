@@ -1,7 +1,7 @@
-<?php namespace Examples\AutoStateExample;
+<?php namespace UnderStated\Examples\AutoStateExample;
 
-use FSM\Contracts\MachineBuilder;
-use FSM\States\State;
+use UnderStated\Contracts\MachineBuilder;
+use UnderStated\States\State;
 
 class Director
 {

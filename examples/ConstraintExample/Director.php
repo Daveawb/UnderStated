@@ -1,6 +1,6 @@
-<?php namespace Examples\ConstraintExample;
+<?php namespace UnderStated\Examples\ConstraintExample;
 
-use FSM\Contracts\MachineBuilder;
+use UnderStated\Contracts\MachineBuilder;
 
 class Director
 {

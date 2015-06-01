@@ -1,6 +1,6 @@
-<?php namespace FSM\Contracts;
+<?php namespace UnderStated\Contracts;
 
-use FSM\Machine;
+use UnderStated\Machine;
 
 /**
  * Interface MachineDriven

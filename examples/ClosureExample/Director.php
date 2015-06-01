@@ -1,6 +1,6 @@
-<?php namespace Examples\ClosureExample;
+<?php namespace UnderStated\Examples\ClosureExample;
 
-use FSM\Contracts\MachineBuilder;
+use UnderStated\Contracts\MachineBuilder;
 
 class Director
 {

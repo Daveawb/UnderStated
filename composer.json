@@ -1,5 +1,5 @@
 {
-  "name": "daveawb/fsm",
+  "name": "daveawb/understated",
   "description": "A PHP Finite State Machine ",
   "minimum-stability": "stable",
   "license": "MIT",
@@ -11,12 +11,12 @@
   ],
   "autoload" : {
     "psr-4" : {
-      "FSM\\" : "src/"
+      "UnderStated\\" : "src/"
     }
   },
   "autoload-dev" : {
     "psr-4" : {
-      "Examples\\" : "examples/"
+      "UnderStated\\Examples\\" : "examples/"
     }
   },
   "require": {

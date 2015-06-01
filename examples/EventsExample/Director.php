@@ -1,7 +1,7 @@
-<?php namespace Examples\EventsExample;
+<?php namespace UnderStated\Examples\EventsExample;
 
-use FSM\Contracts\MachineBuilder;
-use FSM\States\State;
+use UnderStated\Contracts\MachineBuilder;
+use UnderStated\States\State;
 
 class Director
 {
