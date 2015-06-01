@@ -3,6 +3,10 @@
 use UnderStated\Contracts\MachineBuilder;
 use UnderStated\States\State;
 
+/**
+ * Class Director
+ * @package UnderStated\Examples\EventsExample
+ */
 class Director
 {
     /**

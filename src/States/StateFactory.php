@@ -53,11 +53,11 @@ class StateFactory
         }
         elseif (is_null($resolvable))
         {
-            $state = $this->newClosureState();
+            $state = $this->newState();
         }
         else
         {
-            $state = $this->getStateFromClass($resolvable);
+            $state = $this->newStateFromClass($resolvable);
         }
 
         return $state;
@@ -69,7 +69,7 @@ class StateFactory
      */
     private function closureState($resolvable)
     {
-        $state = $this->newClosureState();
+        $state = $this->newState();
 
         $state->addClosure('onEnter', $resolvable);
 
@@ -82,13 +82,13 @@ class StateFactory
      */
     private function closureFromArray($resolvable)
     {
-        $state = $this->newClosureState();
+        $state = $this->newState();
 
         foreach($resolvable as $map)
         {
             if (is_array($map))
             {
-                while(list($id, $closure) = each($map))
+                foreach($map as $id => $closure)
                 {
                     $state->addClosure($id, $closure);
                 }
@@ -102,7 +102,7 @@ class StateFactory
      * @param $resolvable
      * @return mixed
      */
-    private function getStateFromClass($resolvable)
+    private function newStateFromClass($resolvable)
     {
         $class = '\\' . ltrim($resolvable, '\\');
 
@@ -112,7 +112,7 @@ class StateFactory
     /**
      * @return ClosureState
      */
-    private function newClosureState()
+    private function newState()
     {
         return new State();
     }
