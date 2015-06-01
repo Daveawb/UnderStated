@@ -1,6 +1,7 @@
 <?php namespace UnderStated\States;
 
 use Closure;
+use UnderStated\Exceptions\StateException;
 
 /**
  * Class StateFactory
@@ -11,7 +12,10 @@ class StateFactory
     /**
      * @param $id
      * @param $resolvable
+     *
      * @return State
+     *
+     * @throws StateException
      */
     public function create($id, $resolvable = null)
     {
@@ -19,6 +23,11 @@ class StateFactory
         {
             $resolvable = func_get_arg(0);
             $id = null;
+        }
+
+        if (is_null($id) && is_callable($resolvable))
+        {
+            throw new StateException('States as closures must have an ID.');
         }
 
         $state = $this->buildState($resolvable);

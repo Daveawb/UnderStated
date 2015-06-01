@@ -2,6 +2,7 @@
 
 namespace spec\UnderStated\States;
 
+use UnderStated\Exceptions\StateException;
 use UnderStated\States\State;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -13,9 +14,15 @@ class StateFactorySpec extends ObjectBehavior
         $this->shouldHaveType('UnderStated\States\StateFactory');
     }
 
-    function it_creates_a_closure_state()
+    function it_does_not_create_a_closure_state()
     {
-        $this->create(function() { return 'test'; })->shouldBeAnInstanceOf(State::class);
+        $this->shouldThrow(StateException::class)->during('create', [function() { return 'test'; }]);
+//        $this->create(function() { return 'test'; })->shouldBeAnInstanceOf(State::class);
+    }
+
+    function it_creates_a_closure_state_with_an_id()
+    {
+        $this->create('test', function() { return 'test'; })->shouldBeAnInstanceOf(State::class);
     }
 
     function it_creates_a_state_from_a_class_name()
@@ -23,7 +30,7 @@ class StateFactorySpec extends ObjectBehavior
         $this->create(State::class)->shouldBeAnInstanceOf(State::class);
     }
 
-    function it_create_a_state_with_an_id()
+    function it_creates_a_state_with_an_id()
     {
         $this->create('test', State::class)->shouldBeAnInstanceOf(State::class);
     }
