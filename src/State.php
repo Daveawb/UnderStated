@@ -1,5 +1,6 @@
 <?php namespace FSM;
 
+use Closure;
 use Fhaculty\Graph\Vertex;
 use FSM\Contracts\MachineDriven;
 
@@ -29,6 +30,11 @@ abstract class State implements MachineDriven
      * @var Machine
      */
     protected $machine;
+
+    /**
+     * @var array
+     */
+    protected $closures = [];
 
     /**
      * @param Machine $machine
@@ -116,5 +122,29 @@ abstract class State implements MachineDriven
     public function handle($handle, $args = [])
     {
         return $this->machine->handle($handle, $args);
+    }
+
+    /**
+     * @param $method
+     * @param callable $closure
+     */
+    public function addClosure($method, Closure $closure)
+    {
+        $this->closures[$method] = $closure;
+    }
+
+    /**
+     * @param $method
+     * @param $args
+     * @return mixed
+     */
+    public function __call($method, $args)
+    {
+        if (array_key_exists($method, $this->closures))
+        {
+            array_unshift($args, $this);
+
+            return call_user_func_array($this->closures[$method], $args);
+        }
     }
 }

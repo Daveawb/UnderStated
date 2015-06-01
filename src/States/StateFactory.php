@@ -27,6 +27,9 @@ class StateFactory
         if ($resolvable instanceof Closure)
             $state = $this->closureState($resolvable);
 
+        if (is_array($resolvable))
+            $state = $this->closureFromArray($resolvable);
+
         else
             $state = $this->getStateFromClass($resolvable);
 
@@ -42,9 +45,9 @@ class StateFactory
      */
     private function closureState($resolvable)
     {
-        $state = new ClosureState();
+        $state = $this->newClosureState();
 
-        $state->addClosureTo('onEnter', $resolvable);
+        $state->addClosure('onEnter', $resolvable);
 
         return $state;
     }
@@ -58,5 +61,31 @@ class StateFactory
         $class = '\\' . ltrim($resolvable, '\\');
 
         return new $class();
+    }
+
+    /**
+     * @return ClosureState
+     */
+    private function newClosureState()
+    {
+        return new ClosureState();
+    }
+
+    private function closureFromArray($resolvable)
+    {
+        $state = $this->newClosureState();
+
+        foreach($resolvable as $map)
+        {
+            if (is_array($map))
+            {
+                while(list($id, $closure) = each($map))
+                {
+                    $state->addClosure($id, $closure);
+                }
+            }
+        }
+
+        return $state;
     }
 }

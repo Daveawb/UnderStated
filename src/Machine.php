@@ -3,6 +3,7 @@
 use Closure;
 use FSM\Contracts\EventInterface;
 use FSM\Contracts\StructureInterface;
+use FSM\States\ClosureState;
 
 /**
  * Class Machine
@@ -109,10 +110,9 @@ class Machine
      */
     public function handle($handle, $args = [], $result = true)
     {
-        if (method_exists($this->state, $handle))
-        {
-            $result = call_user_func_array([$this->state, $handle], $args);
-        }
+        array_unshift($args, $this->state);
+
+        $result = call_user_func_array([$this->state, $handle], $args);
 
         return is_bool($result) ? $result : true;
     }
