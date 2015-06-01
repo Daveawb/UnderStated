@@ -11,3 +11,6 @@ default:
       whenreadyhandler:
         paths : [%paths.base%/tests/Features/WhenReadyHandler]
         contexts: [Contexts\WhenReadyHandler\FsmContext]
+      closureexample:
+        paths : [%paths.base%/tests/Features/ClosureExample]
+        contexts: [Contexts\ClosureExample\FsmContext]

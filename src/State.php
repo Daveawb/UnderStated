@@ -6,6 +6,16 @@ use FSM\Contracts\MachineDriven;
 abstract class State implements MachineDriven
 {
     /**
+     * Initial state
+     */
+    const INITIAL = 1;
+
+    /**
+     * Terminal state
+     */
+    const TERMINAL = 2;
+
+    /**
      * @var string
      */
     protected $state;
@@ -61,7 +71,7 @@ abstract class State implements MachineDriven
     }
 
     /**
-     * Get the class name or the state attribute as the states name
+     * Get the state ID
      *
      * @return string
      */
@@ -71,7 +81,17 @@ abstract class State implements MachineDriven
 
         $className = str_replace('\\', '', snake_case(class_basename($this)));
 
-        return str_replace('_state', '', $className);
+        return $this->state = str_replace('_state', '', $className);
+    }
+
+    /**
+     * Set the state ID
+     *
+     * @param string $state
+     */
+    public function setId($state)
+    {
+        $this->state = $state;
     }
 
     /**

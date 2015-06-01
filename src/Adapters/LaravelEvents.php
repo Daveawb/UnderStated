@@ -1,6 +1,7 @@
 <?php namespace FSM\Adapters;
 
 use Closure;
+use FSM\Contracts\EventInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 
 class LaravelEvents implements EventInterface

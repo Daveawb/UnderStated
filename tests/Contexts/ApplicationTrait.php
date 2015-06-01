@@ -1,16 +1,9 @@
 <?php namespace Contexts;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Gherkin\Node\TableNode;
-use Fhaculty\Graph\Graph;
-use FSM\Adapters\EventInterface;
-use FSM\Adapters\GraphStructure;
-use FSM\Adapters\LaravelEvents;
-use FSM\Adapters\StructureInterface;
+use FSM\Builders\GraphBuilder;
 use FSM\Machine;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Events\Dispatcher;
-use Illuminate\Events\EventServiceProvider;
 
 trait ApplicationTrait {
 
@@ -29,40 +22,17 @@ trait ApplicationTrait {
      */
     public static function setUpSuite()
     {
-        require_once __DIR__ . '/../../vendor/autoload.php';
-
-        static::$app = new Container();
-
-        static::$app->bind(Container::class, function($app)
-        {
-            return $app;
-        });
-
-        $events = new EventServiceProvider(static::$app);
-        $events->register();
-
-        static::$app->bind(Dispatcher::class, function($app)
-        {
-            return $app['events'];
-        });
-
-        static::$app->bind(StructureInterface::class, function($app)
-        {
-            return $app->make(GraphStructure::class);
-        });
-
-        static::$app->bind(EventInterface::class, function($app)
-        {
-            return $app->make(LaravelEvents::class);
-        });
+        static::$app = require(__DIR__ . '/bootstrap.php');
     }
 
     /**
-     * @Given /^I have a "([^"]*)" instance$/
+     * @Given /^I have a director (.*) instance$/
      */
-    public function iHaveAInstance($fsm)
+    public function iHaveADirectorInstance($director)
     {
-        $this->fsm = $this->createInstance($fsm);
+        $director = $this->createInstance($director);
+
+        $this->fsm = $director->build(static::$app->make(GraphBuilder::class));
     }
 
     /**
@@ -84,13 +54,6 @@ trait ApplicationTrait {
         {
             throw new \Exception("FSM state is {$fsmState}. Not {$state}.");
         }
-    }
-
-    private function createInstance($fsm)
-    {
-        $class = '\\'.ltrim(str_replace('/', '\\', $fsm), '\\');
-
-        return static::$app->make($class);
     }
 
     /**
@@ -125,5 +88,16 @@ trait ApplicationTrait {
     public function initialStateIs($initial_state)
     {
         $this->fsm->initialise($initial_state);
+    }
+
+    /**
+     * @param $class
+     * @return mixed
+     */
+    private function createInstance($class)
+    {
+        $prepared = '\\'.ltrim(str_replace('/', '\\', $class), '\\');
+
+        return static::$app->make($prepared);
     }
 }

@@ -4,6 +4,9 @@ use FSM\Machine;
 
 class FSM extends Machine
 {
+    /**
+     * @var array
+     */
     protected $constraints = [
         'first' => false,
         'second' => false,
@@ -11,47 +14,16 @@ class FSM extends Machine
     ];
 
     /**
-     * @return array
+     * @return bool
      */
-    public function states()
-    {
-        return [
-            FirstState::class,
-            SecondState::class,
-            ThirdState::class,
-            ReadyState::class
-        ];
-    }
-
-    /**
-     * @return array
-     */
-    public function transitions()
-    {
-        return [
-            FirstState::class => [
-                SecondState::class,
-                ThirdState::class,
-                ReadyState::class
-            ],
-            SecondState::class => [
-                FirstState::class,
-                ThirdState::class,
-                ReadyState::class
-            ],
-            ThirdState::class => [
-                FirstState::class,
-                SecondState::class,
-                ReadyState::class,
-            ]
-        ];
-    }
-
     public function checkReady()
     {
         return count(array_keys($this->constraints, true)) === count($this->constraints);
     }
 
+    /**
+     * @param $state
+     */
     public function unGuard($state)
     {
         $this->constraints[$state] = true;

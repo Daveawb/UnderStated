@@ -1,4 +1,4 @@
-<?php namespace FSM\Adapters;
+<?php namespace FSM\Contracts;
 
 use Closure;
 

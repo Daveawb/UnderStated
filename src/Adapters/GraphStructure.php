@@ -1,10 +1,18 @@
 <?php namespace FSM\Adapters;
 
 use Fhaculty\Graph\Graph;
+use FSM\Contracts\MachineDriven;
+use FSM\Contracts\StructureInterface;
+use FSM\Machine;
 use FSM\State;
 
-class GraphStructure implements StructureInterface
+class GraphStructure implements StructureInterface, MachineDriven
 {
+    /**
+     * @var Machine
+     */
+    protected $machine;
+
     /**
      * @param Graph $graph
      */
@@ -16,14 +24,20 @@ class GraphStructure implements StructureInterface
     /**
      * @param $id
      * @param State $state
+     * @param int $location
      */
-    public function setState($id, State $state)
+    public function addState($id, State $state, $location = 0)
     {
+        if ($this->graph->getVertices()->isEmpty() || $location === 1)
+            $this->initial = $id;
+
         $vertex = $this->graph->createVertex($id);
 
         $vertex->setAttribute('state', $state);
 
         $state->setVertex($vertex);
+
+        $state->setMachine($this->machine);
     }
 
     /**
@@ -69,11 +83,39 @@ class GraphStructure implements StructureInterface
     /**
      * @param string $from
      * @param string $to
+     * @param bool $undirected
      * @return mixed
      */
-    public function createTransitionTo($from, $to)
+    public function addTransition($from, $to, $undirected = false)
     {
-        return $this->getVertex($from)
-            ->createEdgeTo($this->getVertex($to));
+        $from = $this->getVertex($from);
+        $to = $this->getVertex($to);
+
+        if ($undirected)
+            return $from->createEdge($to);
+
+        return $from->createEdgeTo($to);
+    }
+
+    /**
+     * Set the machine instance to the state
+     *
+     * @param Machine $machine
+     * @return mixed
+     */
+    public function setMachine(Machine $machine)
+    {
+        $this->machine = $machine;
+    }
+
+    /**
+     * Get the initial state
+     *
+     * @param null $override
+     * @return mixed
+     */
+    public function getInitialState($override = null)
+    {
+        return $this->getState($override ? : $this->initial);
     }
 }

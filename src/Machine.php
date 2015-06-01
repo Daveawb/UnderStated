@@ -1,15 +1,14 @@
 <?php namespace FSM;
 
 use Closure;
-use FSM\Adapters\EventInterface;
-use FSM\Adapters\StructureInterface;
-use Illuminate\Container\Container;
+use FSM\Contracts\EventInterface;
+use FSM\Contracts\StructureInterface;
 
 /**
  * Class Machine
  * @package FSM
  */
-abstract class Machine
+class Machine
 {
     /**
      * The name of the state machine
@@ -26,25 +25,11 @@ abstract class Machine
     private $structure;
 
     /**
-     * The laravel application container.
-     *
-     * @var Container
-     */
-    private $app;
-
-    /**
      * List of historical transitions
      *
      * @var array
      */
     private $history = [];
-
-    /**
-     * A map of state ids => class names.
-     *
-     * @var array
-     */
-    private $states = [];
 
     /**
      * The active state
@@ -54,110 +39,25 @@ abstract class Machine
     private $state;
 
     /**
-     * The initial state
-     *
-     * @var string
-     */
-    protected $initial;
-
-    /**
      * Construct the machine
      *
-     * @param Container $app
-     * @param StructureInterface $structure
      * @param EventInterface $events
      */
-    public function __construct(
-        Container $app,
-        StructureInterface $structure,
-        EventInterface $events
-    )
+    public function __construct(EventInterface $events)
     {
-        $this->app = $app;
-        $this->structure = $structure;
         $this->events = $events;
-
-        if ($this->initial)
-        {
-            $this->initialise($this->initial);
-        }
     }
 
     /**
      * Set the initial state manually
      *
-     * @param $state
+     * @param null $state
      */
     public function initialise($state = null)
     {
-        if (count($this->states) <= 0 )
-        {
-            $this->mapStates();
-            $this->mapTransitions();
-        }
-
-        if ( ! $state )
-        {
-            reset($this->states);
-
-            $this->state = key($this->states);
-        }
-        else
-        {
-            $this->state = $this->structure->getState($state);
-        }
+        $this->state = $this->structure->getInitialState($state);
 
         $this->handle('onEnter');
-    }
-
-    /**
-     * Return a class list of all the states
-     *
-     * @return array
-     */
-    abstract public function states();
-
-    /**
-     * Return an array of transitions state => state
-     *
-     * @return array
-     */
-    abstract public function transitions();
-
-    /**
-     * Map the states to the structure
-     *
-     * @return void
-     */
-    private function mapStates()
-    {
-        foreach ($this->states() as $state)
-        {
-            $this->createState($state);
-        }
-    }
-
-    /**
-     * Map the transitions from state to state
-     *
-     * @return void
-     */
-    private function mapTransitions()
-    {
-        foreach ($this->transitions() as $from => $to)
-        {
-            if (is_array($to))
-            {
-                foreach ($to as $shard)
-                {
-                    $this->createTransition($from, $shard);
-                }
-            }
-            else
-            {
-                $this->createTransition($from, $to);
-            }
-        }
     }
 
     /**
@@ -165,8 +65,8 @@ abstract class Machine
      * edge on the graph.
      *
      * @param string $state
-     *
      * @param array $args
+     *
      * @return bool
      */
     public function transition($state, $args = [])
@@ -183,8 +83,8 @@ abstract class Machine
                 {
                     $this->emit('transition', [
                         $this->structure->getState(last($this->history)),
-                        $this->state]
-                    );
+                        $this->state
+                    ]);
 
                     reset($this->history);
                 }
@@ -204,6 +104,7 @@ abstract class Machine
      * @param $handle
      * @param array $args
      * @param bool $result
+     *
      * @return mixed|void
      */
     public function handle($handle, $args = [], $result = true)
@@ -247,6 +148,14 @@ abstract class Machine
     }
 
     /**
+     * @param StructureInterface $structure
+     */
+    public function setStructure(StructureInterface $structure)
+    {
+        $this->structure = $structure;
+    }
+
+    /**
      * Get the machines structure instance.
      *
      * @return mixed
@@ -266,52 +175,6 @@ abstract class Machine
         if (isset($this->name)) return $this->name;
 
         return $this->name = str_replace('\\', '', strtolower(class_basename($this)));
-    }
-
-    /**
-     * Apply the state to the structure
-     *
-     * @param string $stateClass
-     */
-    private function createState($stateClass)
-    {
-        $state = $this->newState($stateClass);
-
-        $state->setMachine($this);
-
-        $this->structure->setState($id = $state->getId(), $state);
-
-        $this->states[$id] = $stateClass;
-    }
-
-    /**
-     * Create a new state instance from a FQC
-     *
-     * @param string $stateClass
-     * @return State
-     */
-    private function newState($stateClass)
-    {
-        $class = '\\' . ltrim($stateClass, '\\');
-
-        return $this->app->make($class);
-    }
-
-    /**
-     * Create a new directed edge from one state to another
-     *
-     * @param string $from
-     * @param string $to
-     *
-     * @return \Fhaculty\Graph\Edge\Directed
-     */
-    private function createTransition($from, $to)
-    {
-        $from = array_keys($this->states, $from);
-
-        $to = array_keys($this->states, $to);
-
-        return $this->structure->createTransitionTo($from[0], $to[0]);
     }
 
     /**
