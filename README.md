@@ -29,11 +29,11 @@ $builder = new UnderStated\Builders\GraphBuilder();
 
 $fsm = $builder->create()
 
-    // Create a state state(string $id, array||classname||closure $resolve, int $location)
-    ->state('on', function() { // state is on })
+    // Create an 'on' state
+    ->state('on', function() { /* state is on */ })
     
-    // Create another state
-    ->state('off', function() { // state is off }), State::INITIAL)
+    // Create an 'off' state
+    ->state('off', function() { /* state is off */ }), State::INITIAL)
     
     // Create a transition (undirected) between the two states
     ->transition('on', 'off', true)
