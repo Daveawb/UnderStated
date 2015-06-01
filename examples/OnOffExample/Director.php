@@ -1,6 +1,7 @@
-<?php namespace Examples\OnOff;
+<?php namespace Examples\OnOffExample;
 
 use FSM\Contracts\MachineBuilder;
+use FSM\States\State;
 
 class Director
 {
@@ -14,7 +15,7 @@ class Director
     {
         return $builder->create()
             ->state('on', OnState::class)
-            ->state('off', OffState::class, 1)
+            ->state('off', OffState::class, State::INITIAL)
             ->transition('on', 'off', true)
             ->get(true);
     }

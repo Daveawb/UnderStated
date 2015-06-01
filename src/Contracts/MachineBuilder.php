@@ -25,7 +25,7 @@ interface MachineBuilder
      * @param int $location
      * @return $this
      */
-    public function state($id, $resolvable, $location = 0);
+    public function state($id, $resolvable = null, $location = 0);
 
     /**
      * Add a list of states

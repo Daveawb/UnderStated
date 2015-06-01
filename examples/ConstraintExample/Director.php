@@ -1,4 +1,4 @@
-<?php namespace Examples\WhenReady;
+<?php namespace Examples\ConstraintExample;
 
 use FSM\Contracts\MachineBuilder;
 

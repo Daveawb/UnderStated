@@ -1,6 +1,6 @@
-<?php namespace Examples\WhenReadyHandler;
+<?php namespace Examples\AutoStateExample;
 
-use FSM\State;
+use FSM\States\State;
 
 /**
  * Class AutoSetupState

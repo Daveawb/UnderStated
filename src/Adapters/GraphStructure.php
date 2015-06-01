@@ -4,7 +4,7 @@ use Fhaculty\Graph\Graph;
 use FSM\Contracts\MachineDriven;
 use FSM\Contracts\StructureInterface;
 use FSM\Machine;
-use FSM\State;
+use FSM\States\State;
 
 class GraphStructure implements StructureInterface, MachineDriven
 {

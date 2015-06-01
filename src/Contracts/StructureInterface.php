@@ -1,6 +1,6 @@
 <?php namespace FSM\Contracts;
 
-use FSM\State;
+use FSM\States\State;
 
 interface StructureInterface {
 

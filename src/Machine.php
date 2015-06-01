@@ -3,7 +3,8 @@
 use Closure;
 use FSM\Contracts\EventInterface;
 use FSM\Contracts\StructureInterface;
-use FSM\States\ClosureState;
+use FSM\Exceptions\UninitialisedException;
+use FSM\States\State;
 
 /**
  * Class Machine
@@ -16,7 +17,7 @@ class Machine
      *
      * @var string
      */
-    protected $name;
+    protected $id;
 
     /**
      * The state structure
@@ -67,18 +68,21 @@ class Machine
      *
      * @param string $state
      * @param array $args
-     *
      * @return bool
+     * @throws UninitialisedException
      */
     public function transition($state, $args = [])
     {
-        if ($this->structure->canTransitionFrom($id = $this->getStateId(), $state))
+        if ( ! $this->state )
+            throw new UninitialisedException('FSM is not initialised.');
+
+        if ($this->structure->canTransitionFrom($id = $this->getState()->getId(), $state))
         {
             if ( $this->handle('onExit', $args) )
             {
                 array_push($this->history, $id);
 
-                $this->state = $this->structure->getState($state);
+                $this->setState($this->structure->getState($state));
 
                 if ( $this->handle('onEnter', $args) )
                 {
@@ -91,9 +95,9 @@ class Machine
                 }
                 else
                 {
-                    $this->state = $this->structure->getState(
+                    $this->setState($this->structure->getState(
                         array_splice($this->history, -1, 1)[0]
-                    );
+                    ));
                 }
             }
         }
@@ -105,26 +109,31 @@ class Machine
      * @param $handle
      * @param array $args
      * @param bool $result
-     *
      * @return mixed|void
+     * @throws UninitialisedException
      */
     public function handle($handle, $args = [], $result = true)
     {
+        if ( ! $this->state )
+            throw new UninitialisedException('FSM is not initialised.');
+
         array_unshift($args, $this->state);
 
         $result = call_user_func_array([$this->state, $handle], $args);
+
+        $this->emit("handled.{$handle}", [$this->state, $result]);
 
         return is_bool($result) ? $result : true;
     }
 
     /**
-     * Get the current state id.
+     * Get a list of all possible state transitions.
      *
-     * @return string
+     * @return array
      */
-    public function getStateId()
+    public function getTransitions()
     {
-        return $this->state->getId();
+        return $this->structure->getTransitionsFrom($this->getState()->getId());
     }
 
     /**
@@ -138,21 +147,13 @@ class Machine
     }
 
     /**
-     * Get a list of all possible state transitions.
+     * Set the current state
      *
-     * @return array
+     * @param State $state
      */
-    public function getPossibleTransitions()
+    public function setState(State $state)
     {
-        return $this->structure->getTransitionsFrom($this->getStateId());
-    }
-
-    /**
-     * @param StructureInterface $structure
-     */
-    public function setStructure(StructureInterface $structure)
-    {
-        $this->structure = $structure;
+        $this->state = $state;
     }
 
     /**
@@ -166,16 +167,35 @@ class Machine
     }
 
     /**
-     * Get the machines name
+     * @param StructureInterface $structure
+     */
+    public function setStructure(StructureInterface $structure)
+    {
+        $this->structure = $structure;
+    }
+
+    /**
+     * Get the machines id
      *
      * @return string
      */
-    public function getName()
+    public function getId()
     {
-        if (isset($this->name)) return $this->name;
+        if (isset($this->id)) return $this->id;
 
-        return $this->name = str_replace('\\', '', strtolower(class_basename($this)));
+        return $this->id = str_replace('\\', '', strtolower(class_basename($this)));
     }
+
+    /**
+     * Set the machines id
+     *
+     * @param $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Emit an event
@@ -187,7 +207,7 @@ class Machine
     {
         array_unshift($args, $this, $this->state);
 
-        $this->events->emit("{$this->getName()}.{$type}", $args);
+        $this->events->emit("{$this->getId()}.{$type}", $args);
     }
 
     /**
@@ -196,6 +216,6 @@ class Machine
      */
     public function listen($type, Closure $closure)
     {
-        $this->events->listen("{$this->getName()}.{$type}", $closure);
+        $this->events->listen("{$this->getId()}.{$type}", $closure);
     }
 }

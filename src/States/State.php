@@ -1,20 +1,17 @@
-<?php namespace FSM;
+<?php namespace FSM\States;
 
 use Closure;
 use Fhaculty\Graph\Vertex;
 use FSM\Contracts\MachineDriven;
+use FSM\Exceptions\InvalidStateMethodException;
+use FSM\Machine;
 
-abstract class State implements MachineDriven
+class State implements MachineDriven
 {
     /**
-     * Initial state
+     * Initial state constant
      */
     const INITIAL = 1;
-
-    /**
-     * Terminal state
-     */
-    const TERMINAL = 2;
 
     /**
      * @var string
@@ -131,6 +128,28 @@ abstract class State implements MachineDriven
     public function addClosure($method, Closure $closure)
     {
         $this->closures[$method] = $closure;
+    }
+
+    /**
+     * onEnter handler for state.
+     *
+     * @param State $state
+     * @return bool
+     */
+    public function onEnter(State $state)
+    {
+        return true;
+    }
+
+    /**
+     * onExit handler for state
+     *
+     * @param State $state
+     * @return bool
+     */
+    public function onExit(State $state)
+    {
+        return true;
     }
 
     /**

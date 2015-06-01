@@ -1,7 +1,6 @@
 <?php namespace FSM\States;
 
 use Closure;
-use FSM\State;
 
 /**
  * Class StateFactory
@@ -16,38 +15,76 @@ class StateFactory
      */
     public function create($id, $resolvable = null)
     {
-        if (func_num_args() === 1) {
+        if (func_num_args() === 1)
+        {
             $resolvable = func_get_arg(0);
             $id = null;
         }
 
-        if ($resolvable instanceof State)
-            return $resolvable;
+        $state = $this->buildState($resolvable);
 
-        if ($resolvable instanceof Closure)
-            $state = $this->closureState($resolvable);
-
-        if (is_array($resolvable))
-            $state = $this->closureFromArray($resolvable);
-
-        else
-            $state = $this->getStateFromClass($resolvable);
-
-        if ($id)
-            $state->setId($id);
+        if ($id) $state->setId($id);
 
         return $state;
     }
 
     /**
      * @param $resolvable
-     * @return ClosureState
+     * @return ClosureState|mixed
+     */
+    private function buildState($resolvable)
+    {
+        if ($resolvable instanceof Closure)
+        {
+            $state = $this->closureState($resolvable);
+        }
+        elseif (is_array($resolvable))
+        {
+            $state = $this->closureFromArray($resolvable);
+        }
+        elseif (is_null($resolvable))
+        {
+            $state = $this->newClosureState();
+        }
+        else
+        {
+            $state = $this->getStateFromClass($resolvable);
+        }
+
+        return $state;
+    }
+
+    /**
+     * @param $resolvable
+     * @return State
      */
     private function closureState($resolvable)
     {
         $state = $this->newClosureState();
 
         $state->addClosure('onEnter', $resolvable);
+
+        return $state;
+    }
+
+    /**
+     * @param $resolvable
+     * @return State
+     */
+    private function closureFromArray($resolvable)
+    {
+        $state = $this->newClosureState();
+
+        foreach($resolvable as $map)
+        {
+            if (is_array($map))
+            {
+                while(list($id, $closure) = each($map))
+                {
+                    $state->addClosure($id, $closure);
+                }
+            }
+        }
 
         return $state;
     }
@@ -68,24 +105,6 @@ class StateFactory
      */
     private function newClosureState()
     {
-        return new ClosureState();
-    }
-
-    private function closureFromArray($resolvable)
-    {
-        $state = $this->newClosureState();
-
-        foreach($resolvable as $map)
-        {
-            if (is_array($map))
-            {
-                while(list($id, $closure) = each($map))
-                {
-                    $state->addClosure($id, $closure);
-                }
-            }
-        }
-
-        return $state;
+        return new State();
     }
 }

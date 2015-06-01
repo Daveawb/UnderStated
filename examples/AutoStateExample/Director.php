@@ -1,6 +1,7 @@
-<?php namespace Examples\WhenReadyHandler;
+<?php namespace Examples\AutoStateExample;
 
 use FSM\Contracts\MachineBuilder;
+use FSM\States\State;
 
 class Director
 {
@@ -13,11 +14,9 @@ class Director
     public function build(MachineBuilder $builder)
     {
         return $builder->create()
-            ->state('auto_setup', AutoSetupState::class)
-            ->state('setup', SetupState::class, 1)
-            ->state('ready', ReadyState::class)
+            ->state('auto_setup', AutoSetupState::class, State::INITIAL)
+            ->state('ready')
             ->transition('auto_setup', 'ready')
-            ->transition('setup', 'ready')
             ->get(false);
     }
 }

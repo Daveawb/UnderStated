@@ -2,15 +2,15 @@ default:
   autoload:
     '' : %paths.base%/tests
   suites:
-      onoff:
+      OnOff:
         paths : [%paths.base%/tests/Features/OnOff]
-        contexts: [Contexts\OnOff\FsmContext]
-      whenready:
-        paths : [%paths.base%/tests/Features/WhenReady]
-        contexts: [Contexts\WhenReady\FsmContext]
-      whenreadyhandler:
-        paths : [%paths.base%/tests/Features/WhenReadyHandler]
-        contexts: [Contexts\WhenReadyHandler\FsmContext]
-      closureexample:
-        paths : [%paths.base%/tests/Features/ClosureExample]
-        contexts: [Contexts\ClosureExample\FsmContext]
+        contexts: [Contexts\FsmContext]
+      Constraint:
+        paths : [%paths.base%/tests/Features/Constraint]
+        contexts: [Contexts\FsmContext]
+      AutoState:
+        paths : [%paths.base%/tests/Features/AutoState]
+        contexts: [Contexts\FsmContext]
+      Closure:
+        paths : [%paths.base%/tests/Features/Closure]
+        contexts: [Contexts\FsmContext]

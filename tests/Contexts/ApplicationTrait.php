@@ -48,7 +48,7 @@ trait ApplicationTrait {
      */
     public function theStateShouldBe($state)
     {
-        $fsmState = $this->fsm->getStateId();
+        $fsmState = $this->fsm->getState()->getId();
 
         if ($fsmState !== $state)
         {
@@ -63,7 +63,7 @@ trait ApplicationTrait {
     {
         $states = $table->getRow(0);
 
-        $transitions = $this->fsm->getPossibleTransitions();
+        $transitions = $this->fsm->getTransitions();
 
         foreach ($states as $state)
         {
