@@ -110,9 +110,9 @@ class MachineSpec extends ObjectBehavior
         $this->handle('onExit', []);
     }
 
-    function it_should_emit_events(EventInterface $events)
+    function it_should_fire_events(EventInterface $events)
     {
-        $this->emit('transition', []);
+        $this->fire('transition', []);
     }
 
     function it_should_register_event_listeners()

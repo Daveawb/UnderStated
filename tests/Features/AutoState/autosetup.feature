@@ -5,3 +5,8 @@ Feature:The auto setup state should not allow transition to ready until precondi
     And Initial state is auto_setup
     Then The state should be ready
 
+  Scenario: It should accept an initialise event
+    Given I have a director Examples/AutoStateExample/Director instance
+    When An external event machine.initialise is fired
+    Then The state should be ready
+

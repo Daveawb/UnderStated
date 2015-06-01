@@ -1,6 +1,5 @@
 <?php namespace FSM\Contracts;
 
-use Closure;
 
 interface EventInterface
 {
@@ -9,14 +8,14 @@ interface EventInterface
      * @param callable $callback
      * @return mixed
      */
-    public function listen($name, Closure $callback);
+    public function listen($name, callable $callback);
 
     /**
      * @param $name
      * @param array $args
      * @return mixed
      */
-    public function emit($name, $args = []);
+    public function fire($name, $args = []);
 
     /**
      * @param $names

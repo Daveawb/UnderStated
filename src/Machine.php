@@ -1,6 +1,5 @@
 <?php namespace FSM;
 
-use Closure;
 use FSM\Contracts\EventInterface;
 use FSM\Contracts\StructureInterface;
 use FSM\Exceptions\UninitialisedException;
@@ -48,6 +47,8 @@ class Machine
     public function __construct(EventInterface $events)
     {
         $this->events = $events;
+
+        $this->listen('initialise', [$this, 'initialise']);
     }
 
     /**
@@ -58,6 +59,8 @@ class Machine
     public function initialise($state = null)
     {
         $this->state = $this->structure->getInitialState($state);
+
+        $this->forget('initialise');
 
         $this->handle('onEnter');
     }
@@ -86,10 +89,11 @@ class Machine
                 if ( $this->execHandle('onEnter', [$from = $this->structure->getState($id)]) )
                 {
                     // Remove all the bound events from the previous state
-                    $this->forget($from->getBoundEvents());
+                    if ($bound = $from->getBoundEvents())
+                        $this->forget($bound);
 
                     // Emit a transition event
-                    $this->emit('transition', [
+                    $this->fire('transition', [
                         $from,
                         $this->state
                     ]);
@@ -123,7 +127,7 @@ class Machine
 
         $data = $this->execHandle($handle, $args);
 
-        $this->emit("handled.{$handle}", [$this->state, $data]);
+        $this->fire("handled.{$handle}", [$this->state, $data]);
 
         return $data;
     }
@@ -214,7 +218,7 @@ class Machine
     }
 
     /**
-     * Set the machines id
+     * Set the machines ID
      *
      * @param $id
      */
@@ -225,32 +229,61 @@ class Machine
 
 
     /**
-     * Emit an event
+     * Fire an event bound to this machines ID.
      *
      * @param $type
      * @param array $args
      */
-    public function emit($type, $args = [])
+    public function fire($type, $args = [])
     {
         array_unshift($args, $this);
 
-        $this->events->emit("{$this->getId()}.{$type}", $args);
+        $this->events->fire($this->appendId($type), $args);
     }
 
     /**
+     * Listen for events of a type bound to this machines ID.
+     *
      * @param $type
      * @param callable $closure
      */
-    public function listen($type, Closure $closure)
+    public function listen($type, callable $closure)
     {
-        $this->events->listen("{$this->getId()}.{$type}", $closure);
+        $this->events->listen($this->appendId($type), $closure);
     }
 
     /**
+     * Forget an event or events that were previously
+     * registered.
+     *
      * @param $events
      */
     public function forget($events)
     {
+        if (is_array($events))
+        {
+            foreach($events as $event)
+            {
+                $events = $this->appendId($event);
+            }
+        }
+        else
+        {
+            $events = $this->appendId($events);
+        }
+
         $this->events->forget($events);
+    }
+
+    /**
+     * Append the machines ID to a string using
+     * dot notation.
+     *
+     * @param $string
+     * @return string
+     */
+    protected function appendId($string)
+    {
+        return "{$this->getId()}.{$string}";
     }
 }

@@ -65,11 +65,11 @@ class StateSpec extends ObjectBehavior
 
     function it_should_call_a_handler(Machine $machine)
     {
-        $machine->handle('handler', ['arg1' => 'argVal'])->shouldBeCalled();
+        $machine->handle('handler', ['arg1' => 'argVal'])->shouldBeCalled()->willReturn("it worked");
 
         $this->setMachine($machine);
 
-        $this->handle('handler', ['arg1' => 'argVal']);
+        $this->handle('handler', ['arg1' => 'argVal'])->shouldReturn("it worked");
     }
 
     function it_should_add_a_closure_method()
@@ -93,13 +93,13 @@ class StateSpec extends ObjectBehavior
         $this->myNonExistantHandler()->shouldReturn(null);
     }
 
-    function it_should_emit_events(Machine $machine)
+    function it_should_fire_events(Machine $machine)
     {
-        $machine->emit('event', [])->shouldBeCalled();
+        $machine->fire('event', [])->shouldBeCalled();
 
         $this->setMachine($machine);
 
-        $this->emit('event');
+        $this->fire('event');
     }
 
     function it_should_register_event_listeners(Machine $machine)

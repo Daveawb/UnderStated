@@ -91,11 +91,27 @@ trait ApplicationTrait {
     }
 
     /**
-     * @When /^An event (.*) is emitted$/
+     * @When /^An event (.*) is fired$/
      */
-    public function anEventIsEmitted($event)
+    public function anEventIsFired($event)
     {
-        $this->fsm->emit($event, []);
+        $this->fsm->fire($event, []);
+    }
+
+    /**
+     * @When /^An external event (.*) is fired$/
+     */
+    public function anExternalEventIsFired($event)
+    {
+        static::$app['events']->fire($event);
+    }
+
+    /**
+     * @When /^An external event (.*) is fired with payload$/
+     */
+    public function anExternalEventIsFiredWithPayload($event, TableNode $payload)
+    {
+        static::$app['events']->fire($event, $payload->getRow(0));
     }
 
     /**

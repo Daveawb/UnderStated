@@ -24,7 +24,7 @@ class LaravelEvents implements EventInterface
      * @param callable $callback
      * @return mixed
      */
-    public function listen($name, Closure $callback)
+    public function listen($name, callable $callback)
     {
         $this->dispatcher->listen($name, $callback);
     }
@@ -34,7 +34,7 @@ class LaravelEvents implements EventInterface
      * @param array $args
      * @return mixed
      */
-    public function emit($name, $args = [])
+    public function fire($name, $args = [])
     {
         $this->dispatcher->fire($name, $args);
     }

@@ -140,9 +140,9 @@ class State implements MachineDriven
      * @param $event
      * @param array $args
      */
-    public function emit($event, $args = [])
+    public function fire($event, $args = [])
     {
-        $this->machine->emit($event, $args);
+        $this->machine->fire($event, $args);
     }
 
     /**
