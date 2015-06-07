@@ -70,6 +70,92 @@ $fsm->transition('off');
 echo ($fsm->getState()->getId()); // outputs 'off'
 ````
 
+##Class based FSM
+Closures are useful for quick implementations but when complex behaviour is required within states and in the transition logic, it is much better to create state representations as classes. We'll look again at the on off example.
+
+For full examples using states and implementing complex interactions please review the example implementations included in this project.
+
+Each state has three predefined handles that are called automatically by the FSM. These are `onEnter()`, `onExit()` and `onReset()`.
+
+###onEnter()
+@param State $previousState
+@return bool
+
+This method if it exists is called as soon as the state is transitioned to. The previous state's object is passed as the first argument to this method allowing you to call methods on it. Calling `transition()` or `handle()` on the previous state however will throw exceptions and will have no effect.
+
+Returning a `boolean true` will authorise the transition attempt and the state will change.
+Returning a `boolean false` will stop the transition and the state will remain as it was.
+
+The return value of onEnter gives you a post transition hook into the workflow to prevent or authorise a transition.
+
+###onExit()
+@param State $nextState
+@return bool
+
+This method, much like onEnter, is fired when transitioning from this state to another. The same rules apply as per onEnter, calling `transition()` or `handle()` on the next state will throw exceptions.
+
+Returning a `boolean true` will authorise the transition from this state to the next.
+Returning a `boolean false` will stop the transition and the state will remain as it was.
+
+The return value of onExit gives you a pre transition hook into the workflow to prevent or authorise a transition.
+
+###onReset()
+@return void
+
+This method is used for cleaning up the state once it has been transitioned from and is no longer active. This method is used internally for removing event bindings from the state and as such if you override this method be sure to call the parents implementation.
+
+````php
+public function onReset()
+{
+    // <-- Clean up logic here
+    
+    parent::onReset();
+}
+````
+###Example state
+````php
+use UnderStated\State;
+
+class StateOne extends State
+{
+    /**
+     * @param State
+     * @return bool
+     */
+    public function onEnter(State $previous)
+    {
+        $this->handle('myHandle');
+        
+        return true;
+    }
+    
+    /**
+     * A state handler
+     */
+    public function myHandle()
+    {
+        // I'm handled when the state changes
+    }
+    
+    /**
+     * @param State
+     * @return boolean
+     */
+    public function onExit(State $next)
+    {
+        // Will return true if unimplemented
+        return true;
+    }
+}
+````
+
+Using this state is a case of giving the fully qualified class name as the second parameter to the builders state method.
+
+````php
+$builder->create()
+    ->state('on', StateOne::class)
+````
+
 #Examples
 Take a look at the [examples](https://github.com/Daveawb/UnderStated/tree/master/examples) for a comprehensive select
  of different ways the FSM can be used.
