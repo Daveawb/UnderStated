@@ -1,16 +1,16 @@
 A Finite State Machine for Laravel
 ==================================
 
-#Why use an FSM?
+##Why use an FSM?
 FSM's are a resource that allow developers tight control over resources within an application. There are many 
 articles detailing FSM's and what they are and what they're capable of so I won't go into much detail here.
 
-#Requirements
+##Requirements
 - >= PHP 5.5
 - >= Laravel 5.*
 
-#Installation
-##Composer
+##Installation
+###Composer
 Add the following to your composer.json file
 
 ````json
@@ -21,7 +21,7 @@ Add the following to your composer.json file
 }
 ````
 
-#A Simple FSM
+##A Simple FSM
 ````php
 use UnderStated\States\State;
 
