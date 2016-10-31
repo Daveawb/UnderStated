@@ -2,7 +2,7 @@ A Finite State Machine for Laravel
 ==================================
 
 ##Why use an FSM?
-FSM's are a resource that allow developers tight control over resources within an application. There are many 
+FSM's are a resource that allow developers tight control over resources within an application. There are many
 articles detailing FSM's and what they are and what they're capable of so I won't go into much detail here.
 
 ##Requirements
@@ -31,21 +31,21 @@ $fsm = $builder->create()
 
     // Create an 'on' state
     ->state('on', function() { /* state is on */ })
-    
+
     // Create an 'off' state
     ->state('off', function() { /* state is off */ }), State::INITIAL)
-    
+
     // Create a transition (undirected) between the two states
     ->transition('on', 'off', true)
-    
+
     // Get the FSM instance
     ->get();
 ````
 
 Now that we have that out of the way, how do you use it?
 
-We declared an undirected transition between states 'on' and 'off'. This means that both those states are capable of 
-transitioning from one to the other indefinitely. Also notice the `State::INITIAL` passed as the third argument to 
+We declared an undirected transition between states 'on' and 'off'. This means that both those states are capable of
+transitioning from one to the other indefinitely. Also notice the `State::INITIAL` passed as the third argument to
 the 'off' state. This will mean that when the FSM is initialised this will be the state it is in.
 
 Before we go any further we need to initialise the FSM.
@@ -101,7 +101,7 @@ Calling `transition()` or `handle()` on the previous state however will throw an
  * @param  State $nextState
  * @return boolean
  */
-public function onEnter(State $previousState)
+public function onExit(State $nextState)
 ```
 This method, much like onEnter, is fired when transitioning from the current state to another. The same rules apply as per onEnter, calling `transition()` or `handle()` on the next state will throw an exception.
 
@@ -112,7 +112,7 @@ This method is used for cleaning up the state once it has been transitioned from
 public function onReset()
 {
     // <-- Clean up logic here
-    
+
     parent::onReset();
 }
 ````
@@ -129,10 +129,10 @@ class StateOne extends State
     public function onEnter(State $previous)
     {
         $this->handle('myHandle');
-        
+
         return true;
     }
-    
+
     /**
      * A state handler
      */
@@ -140,7 +140,7 @@ class StateOne extends State
     {
         // I'm handled when the state changes
     }
-    
+
     /**
      * @param State
      * @return boolean
