@@ -16,10 +16,20 @@ Add the following to your composer.json file
 ````json
 {
     "require": {
-        "daveawb/understated": "0.0.1"
+        "daveawb/understated": "0.0.2"
     },
 }
 ````
+
+###Laravel
+Open `config/app.php` and register the required service provider.
+
+```php
+'providers' => [
+    // ...
+    UnderStated\States\Providers\UnderStatedServiceProvider::class,
+]
+```
 
 ##A Simple FSM
 ````php
