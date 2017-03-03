@@ -16,7 +16,7 @@ Add the following to your composer.json file
 ````json
 {
     "require": {
-        "daveawb/understated": "0.0.2"
+        "daveawb/understated": "0.0.3"
     },
 }
 ````
