@@ -27,7 +27,7 @@ Open `config/app.php` and register the required service provider.
 ```php
 'providers' => [
     // ...
-    UnderStated\States\Providers\UnderStatedServiceProvider::class,
+    UnderStated\Providers\UnderStatedServiceProvider::class,
 ]
 ```
 
