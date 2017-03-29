@@ -1,16 +1,16 @@
 A Finite State Machine for Laravel
 ==================================
 
-##Why use an FSM?
+## Why use an FSM?
 FSM's are a resource that allow developers tight control over resources within an application. There are many
 articles detailing FSM's and what they are and what they're capable of so I won't go into much detail here.
 
-##Requirements
+## Requirements
 - >= PHP 5.5
 - >= Laravel 5.*
 
-##Installation
-###Composer
+## Installation
+### Composer
 Add the following to your composer.json file
 
 ````json
@@ -21,7 +21,7 @@ Add the following to your composer.json file
 }
 ````
 
-###Laravel
+### Laravel
 Open `config/app.php` and register the required service provider.
 
 ```php
@@ -31,7 +31,7 @@ Open `config/app.php` and register the required service provider.
 ]
 ```
 
-##A Simple FSM
+## A Simple FSM
 ````php
 use UnderStated\States\State;
 
@@ -80,14 +80,14 @@ $fsm->transition('off');
 echo ($fsm->getState()->getId()); // outputs 'off'
 ````
 
-##Class based FSM
+## Class based FSM
 Closures are useful for quick implementations but when complex behaviour is required within states and in the transition logic, it is much better to create state representations as classes. We'll look again at the on off example.
 
 For full examples using states and implementing complex interactions please review the example implementations included in this project.
 
 Each state has three predefined handles that are called automatically by the FSM. These are `onEnter()`, `onExit()` and `onReset()`.
 
-###onEnter()
+### onEnter()
 ```php
 /**
  * Automatically called when this state is transitioned to. Returning false from
@@ -101,7 +101,7 @@ public function onEnter(State $previousState)
 ```
 Calling `transition()` or `handle()` on the previous state however will throw an exception and will not fulfil either method.
 
-###onExit()
+### onExit()
 ```php
 /**
  * Automatically called when this state is transitioned from. Returning false from
@@ -115,7 +115,7 @@ public function onExit(State $nextState)
 ```
 This method, much like onEnter, is fired when transitioning from the current state to another. The same rules apply as per onEnter, calling `transition()` or `handle()` on the next state will throw an exception.
 
-###onReset()
+### onReset()
 This method is used for cleaning up the state once it has been transitioned from and is no longer active. This method is used internally for removing event bindings from the state and as such if you override this method be sure to call the parents implementation.
 
 ````php
@@ -126,7 +126,7 @@ public function onReset()
     parent::onReset();
 }
 ````
-###Example state
+### Example state
 ````php
 use UnderStated\State;
 
@@ -170,6 +170,6 @@ $builder->create()
     ->state('on', StateOne::class)
 ````
 
-#Examples
+# Examples
 Take a look at the [examples](https://github.com/Daveawb/UnderStated/tree/master/examples) for a comprehensive select
  of different ways the FSM can be used.
