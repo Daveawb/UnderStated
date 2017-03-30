@@ -1,6 +1,6 @@
 <?php
 
-namespace UnderStated\States\Providers;
+namespace UnderStated\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
