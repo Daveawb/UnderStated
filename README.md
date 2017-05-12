@@ -6,8 +6,8 @@ FSM's are a resource that allow developers tight control over resources within a
 articles detailing FSM's and what they are and what they're capable of so I won't go into much detail here.
 
 ## Requirements
-- >= PHP 5.5
-- >= Laravel 5.*
+- \>= PHP 5.5
+- \>= Laravel 5.*
 
 ## Installation
 ### Composer
@@ -16,7 +16,7 @@ Add the following to your composer.json file
 ````json
 {
     "require": {
-        "daveawb/understated": "0.0.3"
+        "daveawb/understated": "0.0.4"
     },
 }
 ````
@@ -43,7 +43,7 @@ $fsm = $builder->create()
     ->state('on', function() { /* state is on */ })
 
     // Create an 'off' state
-    ->state('off', function() { /* state is off */ }), State::INITIAL)
+    ->state('off', function() { /* state is off */ }, State::INITIAL)
 
     // Create a transition (undirected) between the two states
     ->transition('on', 'off', true)
