@@ -106,6 +106,84 @@ class MachineSpec extends ObjectBehavior
             ->shouldBe(true);
     }
 
+    function it_should_not_transition_when_on_enter_returns_false(GraphStructure $structure, State $state)
+    {
+        $structure->canTransitionFrom('state', 'new_state')
+            ->shouldBeCalled()
+            ->willReturn(true);
+
+        $structure->getState('new_state')
+            ->shouldBeCalled()
+            ->willReturn($state);
+
+        $structure->getState('state')
+            ->shouldBeCalled()
+            ->willReturn($state);
+
+        $state->getId()
+            ->shouldBeCalledTimes(1)
+            ->willReturn('state');
+
+        $state->onExit($state)
+            ->shouldBeCalled()
+            ->willReturn(true);
+
+        // Test condition switch
+        $state->onEnter($state)
+            ->shouldBeCalled()
+            ->willReturn(false);
+
+        // Test condition, events should not be unbound
+        $state->getBoundEvents()
+            ->shouldNotBeCalled();
+
+        $this->setStructure($structure);
+        $this->setState($state);
+
+        // Test assertion
+        $this->transition('new_state')
+            ->shouldBe(false);
+    }
+
+    function it_should_not_transition_when_on_exit_returns_false(GraphStructure $structure, State $state)
+    {
+        $structure->canTransitionFrom('state', 'new_state')
+            ->shouldBeCalled()
+            ->willReturn(true);
+
+        $structure->getState('new_state')
+            ->shouldBeCalled()
+            ->willReturn($state);
+
+        // Test condition
+        $structure->getState('state')
+            ->shouldNotBeCalled();
+
+        $state->getId()
+            ->shouldBeCalledTimes(1)
+            ->willReturn('state');
+
+        // Test condition switch
+        $state->onExit($state)
+            ->shouldBeCalled()
+            ->willReturn(false);
+
+        // Test condition, onEnter should not be called
+        $state->onEnter($state)
+            ->shouldNotBeCalled();
+
+        // Test condition, events should not be unbound
+        $state->getBoundEvents()
+            ->shouldNotBeCalled();
+
+        $this->setStructure($structure);
+        $this->setState($state);
+
+        // Test assertion
+        $this->transition('new_state')
+            ->shouldBe(false);
+    }
+
     function it_should_handle_state_methods(State $state)
     {
         $state->onExit($state)->shouldBeCalled()->willReturn(true);

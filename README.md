@@ -176,5 +176,8 @@ Take a look at the [examples](https://github.com/Daveawb/UnderStated/tree/master
  of different ways the FSM can be used.
 
 # Changelog
-- Deprecated and removed `get` method from builder interface in favour of `getMachine`.
+0.0.4 -> 1.0.0
+- General code tidy up, PSR-2 compliance and removed some unused code.
+- Deprecated and removed `get` method from the `MachineBuilder` interface in favour of `getMachine`.
 - `getMachine` method accepts no arguments and can not initialise an FSM unlike its precursor `get`.
+- `transition` method on `Machine` now returns a boolean to indicate success.
