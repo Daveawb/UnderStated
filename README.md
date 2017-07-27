@@ -6,8 +6,8 @@ FSM's are a resource that allow developers tight control over resources within a
 articles detailing FSM's and what they are and what they're capable of so I won't go into much detail here.
 
 ## Requirements
-- \>= PHP 5.5
-- \>= Laravel 5.*
+- \>= PHP 7.0
+- \>= Laravel 5.4
 
 ## Installation
 ### Composer
