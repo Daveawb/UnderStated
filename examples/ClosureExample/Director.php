@@ -3,6 +3,7 @@
 namespace UnderStated\Examples\ClosureExample;
 
 use UnderStated\Contracts\MachineBuilder;
+use UnderStated\Machine;
 use UnderStated\States\State;
 
 /**
@@ -15,11 +16,11 @@ class Director
      * Build the machine
      *
      * @param MachineBuilder $builder
-     * @return mixed
+     * @return Machine
      */
     public function build(MachineBuilder $builder)
     {
-        return $builder->create()
+        $machine = $builder->create()
             ->state('on', [
                 ['flickSwitch' => function (State $state) {
                     $state->transition('off');
@@ -31,6 +32,10 @@ class Director
                 }]
             ], 1)
             ->transition('on', 'off', true)
-            ->get(true);
+            ->getMachine();
+
+        $machine->initialise();
+
+        return $machine;
     }
 }

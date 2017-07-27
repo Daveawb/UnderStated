@@ -78,6 +78,6 @@ class GraphBuilderSpec extends ObjectBehavior
     {
         $this->create($machine);
 
-        $this->get()->shouldBeAnInstanceOf(Machine::class);
+        $this->getMachine()->shouldBeAnInstanceOf(Machine::class);
     }
 }

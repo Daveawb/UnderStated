@@ -23,6 +23,6 @@ class Director
             ->state('auto_setup', AutoSetupState::class, State::INITIAL)
             ->state('ready')
             ->transition('auto_setup', 'ready')
-            ->get(false);
+            ->getMachine();
     }
 }

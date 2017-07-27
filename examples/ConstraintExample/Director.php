@@ -30,7 +30,7 @@ class Director
             ->transition('first', 'ready')
             ->transition('second', 'ready')
             ->transition('third', 'ready')
-            ->get(false);
+            ->getMachine();
 
         return $machine;
     }
