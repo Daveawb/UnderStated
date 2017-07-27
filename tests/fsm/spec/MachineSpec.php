@@ -2,13 +2,12 @@
 
 namespace spec\UnderStated;
 
+use PhpSpec\ObjectBehavior;
 use UnderStated\Adapters\GraphStructure;
 use UnderStated\Contracts\EventInterface;
 use UnderStated\Contracts\StructureInterface;
 use UnderStated\Exceptions\UninitialisedException;
 use UnderStated\States\State;
-use PhpSpec\ObjectBehavior;
-use Prophecy\Argument;
 
 class MachineSpec extends ObjectBehavior
 {
@@ -24,7 +23,7 @@ class MachineSpec extends ObjectBehavior
 
     function it_should_throw_uninitialised_exception()
     {
-        $this->shouldThrow(UninitialisedException::class)->during('transition', ['nextstate', []]);
+        $this->shouldThrow(UninitialisedException::class)->during('transition', ['next_state', []]);
         $this->shouldThrow(UninitialisedException::class)->during('handle', ['handler', []]);
     }
 
@@ -51,7 +50,7 @@ class MachineSpec extends ObjectBehavior
     {
         $this->setStructure($interface);
 
-        $this->getStructure($interface)->shouldReturn($interface);
+        $this->getStructure()->shouldReturn($interface);
     }
 
     function it_should_set_an_active_state(State $state)
@@ -84,20 +83,27 @@ class MachineSpec extends ObjectBehavior
 
     function it_should_transition(GraphStructure $structure, State $state)
     {
-        $state->getId()->shouldBecalled()->willReturn('state');
+        $state->getId()
+            ->shouldBeCalledTimes(1)
+            ->willReturn('state');
+
         $state->onExit($state)->shouldBeCalled()->willReturn(true);
         $state->onEnter($state)->shouldBeCalled()->willReturn(true);
         $state->getBoundEvents()->shouldBeCalled()->willReturn([]);
 
         $this->setState($state);
 
-        $structure->canTransitionFrom('state', 'newstate')->shouldBeCalled()->willReturn(true);
-        $structure->getState('newstate')->shouldBeCalled()->willReturn($state);
+        $structure->canTransitionFrom('state', 'new_state')
+            ->shouldBeCalled()
+            ->willReturn(true);
+
+        $structure->getState('new_state')->shouldBeCalled()->willReturn($state);
         $structure->getState('state')->shouldBeCalled()->willReturn($state);
 
         $this->setStructure($structure);
 
-        $this->transition('newstate');
+        $this->transition('new_state')
+            ->shouldBe(true);
     }
 
     function it_should_handle_state_methods(State $state)
@@ -109,7 +115,7 @@ class MachineSpec extends ObjectBehavior
         $this->handle('onExit', []);
     }
 
-    function it_should_fire_events(EventInterface $events)
+    function it_should_fire_events()
     {
         $this->fire('transition', []);
     }

@@ -75,53 +75,54 @@ class Machine
      */
     public function transition($state)
     {
-        if ( ! $this->state )
+        if (! $this->state) {
             throw new UninitialisedException('FSM is not initialised.');
+        }
 
-        if ($this->structure->canTransitionFrom($id = $this->getState()->getId(), $state))
-        {
-            if ( $this->execHandle('onExit', [$next = $this->structure->getState($state)]) )
-            {
+        if ($this->structure->canTransitionFrom($id = $this->getState()->getId(), $state)) {
+            if ($this->execHandle('onExit', [$next = $this->structure->getState($state)])) {
                 array_push($this->history, $id);
 
                 $this->setState($next);
 
-                if ( $this->execHandle('onEnter', [$from = $this->structure->getState($id)]) )
-                {
+                if ($this->execHandle('onEnter', [$from = $this->structure->getState($id)])) {
                     // Remove all the bound events from the previous state
-                    if ($bound = $from->getBoundEvents())
+                    if ($bound = $from->getBoundEvents()) {
                         $this->forget($bound);
+                    }
 
                     // Emit a transition event
                     $this->fire('transition', [
                         $from,
                         $this->state
                     ]);
-                }
-                else
-                {
+
+                    return true;
+                } else {
                     $this->setState($this->structure->getState(
                         array_splice($this->history, -1, 1)[0]
                     ));
                 }
             }
         }
+
+        return false;
     }
 
     /**
      * Handle a method on the current state.
      *
-     * @param $handle
+     * @param string $handle
      * @param array $args
-     *
-     * @return mixed|void
+     * @return mixed
      *
      * @throws UninitialisedException
      */
     public function handle($handle, $args = [])
     {
-        if ( ! $this->state )
+        if (! $this->state) {
             throw new UninitialisedException('FSM is not initialised.');
+        }
 
         array_unshift($args, $this->state);
 
@@ -212,7 +213,9 @@ class Machine
      */
     public function getId()
     {
-        if (isset($this->id)) return $this->id;
+        if (isset($this->id)) {
+            return $this->id;
+        }
 
         return $this->id = str_replace('\\', '', strtolower(class_basename($this)));
     }
@@ -260,15 +263,11 @@ class Machine
      */
     public function forget($events)
     {
-        if (is_array($events))
-        {
-            foreach($events as $event)
-            {
+        if (is_array($events)) {
+            foreach ($events as $event) {
                 $events = $this->appendId($event);
             }
-        }
-        else
-        {
+        } else {
             $events = $this->appendId($events);
         }
 

@@ -1,5 +1,12 @@
-<?php namespace UnderStated\Exceptions;
+<?php
 
-class StateException extends \Exception {
+namespace UnderStated\Exceptions;
+
+/**
+ * Class StateException
+ * @package UnderStated\Exceptions
+ */
+class StateException extends \Exception
+{
 
 }

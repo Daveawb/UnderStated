@@ -6,8 +6,8 @@ use UnderStated\States\State;
  * Class AutoSetupState
  * @package Examples\WhenReadyHandler
  */
-class AutoSetupState extends State {
-
+class AutoSetupState extends State
+{
     /**
      * An array of constraints preventing transition away
      * from this state. Keyed by the handlers signature.
@@ -31,6 +31,8 @@ class AutoSetupState extends State {
     public function onEnter(State $state)
     {
         $this->checkReady();
+
+        return parent::onEnter($state);
     }
 
     /**
@@ -73,12 +75,9 @@ class AutoSetupState extends State {
     {
         $next = array_keys($this->constraints, false);
 
-        if (count($next) > 0)
-        {
+        if (count($next) > 0) {
             $this->handle($next[0], []);
-        }
-        else
-        {
+        } else {
             $this->transition('ready');
         }
     }
@@ -92,6 +91,8 @@ class AutoSetupState extends State {
      */
     public function onExit(State $state)
     {
+        parent::onExit($state);
+
         return count(array_keys($this->constraints, true)) === count($this->constraints);
     }
 }

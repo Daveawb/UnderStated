@@ -1,8 +1,14 @@
-<?php namespace UnderStated\Examples\OnOffExample;
+<?php
+
+namespace UnderStated\Examples\OnOffExample;
 
 use UnderStated\Contracts\MachineBuilder;
 use UnderStated\States\State;
 
+/**
+ * Class Director
+ * @package UnderStated\Examples\OnOffExample
+ */
 class Director
 {
     /**

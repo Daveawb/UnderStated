@@ -3,8 +3,13 @@
 namespace UnderStated\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use UnderStated\Adapters\LaravelEvents;
+use UnderStated\Contracts\EventInterface;
 
-
+/**
+ * Class UnderStatedServiceProvider
+ * @package UnderStated\Providers
+ */
 class UnderStatedServiceProvider extends ServiceProvider
 {
     /**
@@ -24,11 +29,9 @@ class UnderStatedServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
         $this->app->bind(
-            \UnderStated\Contracts\EventInterface::class,
-            \UnderStated\Adapters\LaravelEvents::class
+            EventInterface::class,
+            LaravelEvents::class
         );
-
     }
 }

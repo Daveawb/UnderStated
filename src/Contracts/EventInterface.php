@@ -1,6 +1,11 @@
-<?php namespace UnderStated\Contracts;
+<?php
 
+namespace UnderStated\Contracts;
 
+/**
+ * Interface EventInterface
+ * @package UnderStated\Contracts
+ */
 interface EventInterface
 {
     /**
@@ -19,7 +24,6 @@ interface EventInterface
 
     /**
      * @param $names
-     * @return mixed
      */
     public function forget($names);
 }

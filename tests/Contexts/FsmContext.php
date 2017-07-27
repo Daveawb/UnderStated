@@ -1,13 +1,11 @@
 <?php namespace Contexts;
 
 use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Contexts\ApplicationTrait;
 
 /**
  * Defines application features from the specific context.
  */
-class FsmContext implements Context, SnippetAcceptingContext
+class FsmContext implements Context
 {
     use ApplicationTrait;
 

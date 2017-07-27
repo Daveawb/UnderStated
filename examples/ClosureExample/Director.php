@@ -1,7 +1,14 @@
-<?php namespace UnderStated\Examples\ClosureExample;
+<?php
+
+namespace UnderStated\Examples\ClosureExample;
 
 use UnderStated\Contracts\MachineBuilder;
+use UnderStated\States\State;
 
+/**
+ * Class Director
+ * @package UnderStated\Examples\ClosureExample
+ */
 class Director
 {
     /**
@@ -14,10 +21,14 @@ class Director
     {
         return $builder->create()
             ->state('on', [
-                ['flickSwitch' => function($state) { $state->transition('off'); }]
+                ['flickSwitch' => function (State $state) {
+                    $state->transition('off');
+                }]
             ])
             ->state('off', [
-                ['flickSwitch' => function($state) { $state->transition('on'); }]
+                ['flickSwitch' => function (State $state) {
+                    $state->transition('on');
+                }]
             ], 1)
             ->transition('on', 'off', true)
             ->get(true);

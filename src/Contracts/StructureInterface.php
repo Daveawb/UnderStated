@@ -2,7 +2,12 @@
 
 use UnderStated\States\State;
 
-interface StructureInterface {
+/**
+ * Interface StructureInterface
+ * @package UnderStated\Contracts
+ */
+interface StructureInterface
+{
 
     /**
      * @param $id

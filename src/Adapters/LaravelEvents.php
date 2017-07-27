@@ -3,6 +3,10 @@
 use UnderStated\Contracts\EventInterface;
 use Illuminate\Contracts\Events\Dispatcher;
 
+/**
+ * Class LaravelEvents
+ * @package UnderStated\Adapters
+ */
 class LaravelEvents implements EventInterface
 {
     /**
@@ -21,7 +25,7 @@ class LaravelEvents implements EventInterface
     /**
      * @param $name
      * @param callable $callback
-     * @return mixed
+     * @return void
      */
     public function listen($name, callable $callback)
     {
@@ -31,16 +35,16 @@ class LaravelEvents implements EventInterface
     /**
      * @param $name
      * @param array $args
-     * @return mixed
+     * @return void
      */
     public function fire($name, $args = [])
     {
-        $this->dispatcher->fire($name, $args);
+        $this->dispatcher->dispatch($name, $args);
     }
 
     /**
      * @param $names
-     * @return mixed
+     * @return void
      */
     public function forget($names)
     {

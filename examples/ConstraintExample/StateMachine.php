@@ -1,8 +1,14 @@
-<?php namespace UnderStated\Examples\ConstraintExample;
+<?php
+
+namespace UnderStated\Examples\ConstraintExample;
 
 use UnderStated\Machine;
 
-class FSM extends Machine
+/**
+ * Class StateMachine
+ * @package UnderStated\Examples\ConstraintExample
+ */
+class StateMachine extends Machine
 {
     /**
      * @var array

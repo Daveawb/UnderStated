@@ -9,7 +9,3 @@ suites:
         psr4_prefix: UnderStated
         src_path : src
         spec_path : tests/fsm
-
-extensions:
-    - PhpSpec\NyanFormattersExtension\Extension
-formatter.name: nyan.cat

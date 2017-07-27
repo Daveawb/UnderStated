@@ -5,6 +5,10 @@ use Fhaculty\Graph\Vertex;
 use UnderStated\Contracts\MachineDriven;
 use UnderStated\Machine;
 
+/**
+ * Class State
+ * @package UnderStated\States
+ */
 class State implements MachineDriven
 {
     /**
@@ -84,7 +88,10 @@ class State implements MachineDriven
      */
     public function getId()
     {
-        if (isset($this->state)) return $this->state;
+        if (isset($this->state)) {
+            return $this->state;
+        }
+
 
         $className = str_replace('\\', '', snake_case(class_basename($this)));
 
@@ -119,7 +126,7 @@ class State implements MachineDriven
      */
     public function transition($state, $args = [])
     {
-        $this->machine->transition($state, $args);
+        $this->machine->transition($state);
     }
 
     /**
@@ -128,7 +135,7 @@ class State implements MachineDriven
      * @param string $handle
      * @param array $args
      *
-     * @return mixed|void
+     * @return mixed
      */
     public function handle($handle, $args = [])
     {
@@ -203,11 +210,11 @@ class State implements MachineDriven
      */
     public function __call($method, $args)
     {
-        if (array_key_exists($method, $this->closures))
-        {
+        if (array_key_exists($method, $this->closures)) {
             array_unshift($args, $this);
-
             return call_user_func_array($this->closures[$method], $args);
         }
+
+        return false;
     }
 }

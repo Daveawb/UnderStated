@@ -9,7 +9,7 @@ use UnderStated\States\State;
 class ReadyState extends State
 {
     /**
-     * If the FSM is not ready for this state
+     * If the StateMachine is not ready for this state
      * return false and stop transition.
      *
      * @param State $state

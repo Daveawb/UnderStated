@@ -19,44 +19,37 @@ class StateFactory
      */
     public function create($id, $resolvable = null)
     {
-        if (func_num_args() === 1)
-        {
+        if (func_num_args() === 1) {
             $resolvable = func_get_arg(0);
             $id = null;
         }
 
-        if (is_null($id) && is_callable($resolvable))
-        {
+        if (is_null($id) && is_callable($resolvable)) {
             throw new StateException('States as closures must have an ID.');
         }
 
         $state = $this->buildState($resolvable);
 
-        if ($id) $state->setId($id);
+        if ($id) {
+            $state->setId($id);
+        }
 
         return $state;
     }
 
     /**
      * @param $resolvable
-     * @return ClosureState|mixed
+     * @return State
      */
     private function buildState($resolvable)
     {
-        if ($resolvable instanceof Closure)
-        {
+        if ($resolvable instanceof Closure) {
             $state = $this->closureState($resolvable);
-        }
-        elseif (is_array($resolvable))
-        {
+        } elseif (is_array($resolvable)) {
             $state = $this->closureFromArray($resolvable);
-        }
-        elseif (is_null($resolvable))
-        {
+        } elseif (is_null($resolvable)) {
             $state = $this->newState();
-        }
-        else
-        {
+        } else {
             $state = $this->newStateFromClass($resolvable);
         }
 
@@ -84,12 +77,9 @@ class StateFactory
     {
         $state = $this->newState();
 
-        foreach($resolvable as $map)
-        {
-            if (is_array($map))
-            {
-                foreach($map as $id => $closure)
-                {
+        foreach ($resolvable as $map) {
+            if (is_array($map)) {
+                foreach ($map as $id => $closure) {
                     $state->addClosure($id, $closure);
                 }
             }
@@ -100,7 +90,7 @@ class StateFactory
 
     /**
      * @param $resolvable
-     * @return mixed
+     * @return State
      */
     private function newStateFromClass($resolvable)
     {
@@ -110,7 +100,7 @@ class StateFactory
     }
 
     /**
-     * @return ClosureState
+     * @return State
      */
     private function newState()
     {

@@ -1,18 +1,25 @@
-<?php namespace UnderStated\Examples\ConstraintExample;
+<?php
+
+namespace UnderStated\Examples\ConstraintExample;
 
 use UnderStated\Contracts\MachineBuilder;
+use UnderStated\Machine;
 
+/**
+ * Class Director
+ * @package UnderStated\Examples\ConstraintExample
+ */
 class Director
 {
     /**
      * Build the machine
      *
      * @param MachineBuilder $builder
-     * @return mixed
+     * @return Machine
      */
     public function build(MachineBuilder $builder)
     {
-        return $builder->create(app()->make(FSM::class))
+        return $builder->create(app()->make(StateMachine::class))
             ->state('first', FirstState::class)
             ->state('second', SecondState::class)
             ->state('third', ThirdState::class)

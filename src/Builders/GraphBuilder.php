@@ -75,8 +75,7 @@ class GraphBuilder implements MachineBuilder
      */
     public function states(array $states)
     {
-        foreach ($states as $state)
-        {
+        foreach ($states as $state) {
             call_user_func_array([$this, 'state'], $state);
         }
 
@@ -106,8 +105,7 @@ class GraphBuilder implements MachineBuilder
      */
     public function transitions(array $transitions)
     {
-        foreach ($transitions as $transition)
-        {
+        foreach ($transitions as $transition) {
             call_user_func_array([$this, 'transition'], $transition);
         }
 
@@ -122,12 +120,13 @@ class GraphBuilder implements MachineBuilder
      */
     public function get($initialise = false)
     {
-        $machine = $this->machine ? : $this->create();
+        $machine = $this->machine ? : $this->create()->machine;
 
         $machine->setStructure($this->graph);
 
-        if ($initialise)
+        if ($initialise) {
             $machine->initialise();
+        }
 
         return $machine;
     }

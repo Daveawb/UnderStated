@@ -16,11 +16,11 @@ class StateSpec extends ObjectBehavior
 
     function it_should_set_an_id()
     {
-        $this->setId('newid');
-        $this->getId()->shouldReturn('newid');
+        $this->setId('new_id');
+        $this->getId()->shouldReturn('new_id');
     }
 
-    function it_should_get_an_id_from_classname()
+    function it_should_get_an_id_from_class_name()
     {
         $this->getId()->shouldReturn('state');
     }
@@ -46,7 +46,7 @@ class StateSpec extends ObjectBehavior
     {
         $this->setVertex($vertex);
 
-        $this->getVertex($vertex)->shouldReturn($vertex);
+        $this->getVertex()->shouldReturn($vertex);
     }
 
     function it_should_get_bound_state_events()
@@ -56,11 +56,11 @@ class StateSpec extends ObjectBehavior
 
     function it_should_transition_to_another_state(Machine $machine)
     {
-        $machine->transition('nextstate', ['arg'])->shouldBeCalled();
+        $machine->transition('next_state')->shouldBeCalled();
 
         $this->setMachine($machine);
 
-        $this->transition('nextstate', ['arg']);
+        $this->transition('next_state', ['arg']);
     }
 
     function it_should_call_a_handler(Machine $machine)

@@ -58,5 +58,5 @@ interface MachineBuilder
      *
      * @return Machine
      */
-    public function get();
+    public function get($initialise = false);
 }

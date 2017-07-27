@@ -1,5 +1,5 @@
-A Finite State Machine for Laravel
-==================================
+A PHP Finite State Machine (With Laravel 5.4 integration)
+==========================
 
 ## Why use an FSM?
 FSM's are a resource that allow developers tight control over resources within an application. There are many
@@ -17,11 +17,11 @@ Add the following to your composer.json file
 {
     "require": {
         "daveawb/understated": "0.0.4"
-    },
+    }
 }
 ````
 
-### Laravel
+### Laravel Integration
 Open `config/app.php` and register the required service provider.
 
 ```php

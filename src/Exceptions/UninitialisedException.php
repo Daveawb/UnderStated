@@ -1,5 +1,8 @@
-<?php namespace UnderStated\Exceptions;
+<?php
 
-class UninitialisedException extends \Exception {
+namespace UnderStated\Exceptions;
+
+class UninitialisedException extends \Exception
+{
 
 }

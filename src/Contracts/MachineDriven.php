@@ -1,4 +1,6 @@
-<?php namespace UnderStated\Contracts;
+<?php
+
+namespace UnderStated\Contracts;
 
 use UnderStated\Machine;
 
@@ -12,7 +14,6 @@ interface MachineDriven
      * Set the machine instance to the state
      *
      * @param Machine $machine
-     * @return mixed
      */
     public function setMachine(Machine $machine);
 }

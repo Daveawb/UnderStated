@@ -8,10 +8,22 @@ use UnderStated\States\State;
 
 class GraphStructure implements StructureInterface, MachineDriven
 {
+    const VERTEX_ATTRIBUTE = 'state';
+
     /**
      * @var Machine
      */
     protected $machine;
+
+    /**
+     * @var Graph
+     */
+    protected $graph;
+
+    /**
+     * @var null|int
+     */
+    protected $initial;
 
     /**
      * @param Graph $graph
@@ -28,12 +40,13 @@ class GraphStructure implements StructureInterface, MachineDriven
      */
     public function addState($id, State $state, $location = 0)
     {
-        if ($this->graph->getVertices()->isEmpty() || $location === 1)
+        if ($this->graph->getVertices()->isEmpty() || $location === 1) {
             $this->initial = $id;
+        }
 
         $vertex = $this->graph->createVertex($id);
 
-        $vertex->setAttribute('state', $state);
+        $vertex->setAttribute(self::VERTEX_ATTRIBUTE, $state);
 
         $state->setVertex($vertex);
 
@@ -42,7 +55,7 @@ class GraphStructure implements StructureInterface, MachineDriven
 
     /**
      * @param string $id
-     * @return mixed
+     * @return State
      */
     public function getState($id)
     {
@@ -61,7 +74,7 @@ class GraphStructure implements StructureInterface, MachineDriven
     /**
      * @param string $from
      * @param string $to
-     * @return mixed
+     * @return bool
      */
     public function canTransitionFrom($from, $to)
     {
@@ -71,7 +84,7 @@ class GraphStructure implements StructureInterface, MachineDriven
 
     /**
      * @param string $state
-     * @return array
+     * @return string[]
      */
     public function getTransitionsFrom($state)
     {
@@ -91,8 +104,9 @@ class GraphStructure implements StructureInterface, MachineDriven
         $from = $this->getVertex($from);
         $to = $this->getVertex($to);
 
-        if ($undirected)
+        if ($undirected) {
             return $from->createEdge($to);
+        }
 
         return $from->createEdgeTo($to);
     }
@@ -101,7 +115,6 @@ class GraphStructure implements StructureInterface, MachineDriven
      * Set the machine instance to the state
      *
      * @param Machine $machine
-     * @return mixed
      */
     public function setMachine(Machine $machine)
     {

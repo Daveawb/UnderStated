@@ -1,8 +1,14 @@
-<?php namespace UnderStated\Examples\AutoStateExample;
+<?php
+
+namespace UnderStated\Examples\AutoStateExample;
 
 use UnderStated\Contracts\MachineBuilder;
 use UnderStated\States\State;
 
+/**
+ * Class Director
+ * @package UnderStated\Examples\AutoStateExample
+ */
 class Director
 {
     /**
