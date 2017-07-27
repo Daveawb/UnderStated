@@ -122,9 +122,8 @@ class State implements MachineDriven
      * Helper function to transition to a new state.
      *
      * @param string $state
-     * @param array  $args
      */
-    public function transition($state, $args = [])
+    public function transition($state)
     {
         $this->machine->transition($state);
     }

@@ -2,19 +2,24 @@
 
 use UnderStated\States\State;
 
+/**
+ * Class ThirdState
+ * @package UnderStated\Examples\ConstraintExample
+ */
 class ThirdState extends State
 {
     /**
      * @param State $state
-     * @return bool|void
+     * @return bool
      */
     public function onEnter(State $state)
     {
         $this->machine->unGuard('third');
 
-        if ($this->machine->checkReady())
-        {
+        if ($this->machine->checkReady()) {
             $this->transition('ready');
         }
+
+        return parent::onEnter($state);
     }
 }
