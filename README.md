@@ -174,3 +174,7 @@ $builder->create()
 # Examples
 Take a look at the [examples](https://github.com/Daveawb/UnderStated/tree/master/examples) for a comprehensive select
  of different ways the FSM can be used.
+
+# Changelog
+- Deprecated and removed `get` method from builder interface in favour of `getMachine`.
+- `getMachine` method accepts no arguments and can not initialise an FSM unlike its precursor `get`.
