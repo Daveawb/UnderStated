@@ -120,19 +120,13 @@ class GraphBuilder implements MachineBuilder
 
     /**
      * Get the built machine
-     *
-     * @param bool $initialise
      * @return Machine
      */
-    public function get($initialise = false)
+    public function getMachine()
     {
         $machine = $this->machine ? : $this->create()->machine;
 
         $machine->setStructure($this->graph);
-
-        if ($initialise) {
-            $machine->initialise();
-        }
 
         return $machine;
     }

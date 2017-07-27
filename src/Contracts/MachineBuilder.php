@@ -56,8 +56,7 @@ interface MachineBuilder
     /**
      * Get the built machine
      *
-     * @param bool $initialise
      * @return Machine
      */
-    public function get($initialise = false);
+    public function getMachine();
 }
