@@ -1,5 +1,6 @@
 A PHP Finite State Machine (With Laravel 5.4 integration)
 ==========================
+[![Build Status](https://travis-ci.org/Daveawb/UnderStated.svg?branch=master)](https://travis-ci.org/Daveawb/UnderStated)
 
 ## Why use an FSM?
 FSM's are a resource that allow developers tight control over resources within an application. There are many
