@@ -1,4 +1,6 @@
-<?php namespace UnderStated\Builders;
+<?php
+
+namespace UnderStated\Builders;
 
 use Fhaculty\Graph\Graph;
 use UnderStated\Adapters\GraphStructure;
@@ -6,6 +8,10 @@ use UnderStated\Contracts\MachineBuilder;
 use UnderStated\Machine;
 use UnderStated\States\StateFactory;
 
+/**
+ * Class GraphBuilder
+ * @package UnderStated\Builders
+ */
 class GraphBuilder implements MachineBuilder
 {
     /**

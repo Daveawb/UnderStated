@@ -1,4 +1,6 @@
-<?php namespace UnderStated\Adapters;
+<?php
+
+namespace UnderStated\Adapters;
 
 use Fhaculty\Graph\Graph;
 use UnderStated\Contracts\MachineDriven;
@@ -6,6 +8,10 @@ use UnderStated\Contracts\StructureInterface;
 use UnderStated\Machine;
 use UnderStated\States\State;
 
+/**
+ * Class GraphStructure
+ * @package UnderStated\Adapters
+ */
 class GraphStructure implements StructureInterface, MachineDriven
 {
     const VERTEX_ATTRIBUTE = 'state';

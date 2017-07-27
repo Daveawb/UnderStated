@@ -1,20 +1,30 @@
-<?php namespace UnderStated\Examples\ConstraintExample;
+<?php
+
+namespace UnderStated\Examples\ConstraintExample;
 
 use UnderStated\States\State;
 
-class SecondState extends State {
-
+/**
+ * Class SecondState
+ * @package UnderStated\Examples\ConstraintExample
+ */
+class SecondState extends State
+{
     /**
      * @param State $state
-     * @return bool|void
+     * @return bool
      */
     public function onEnter(State $state)
     {
-        $this->machine->unGuard('second');
+        /** @var StateMachine $machine */
+        $machine = $this->machine;
 
-        if ($this->machine->checkReady())
-        {
+        $machine->unGuard('second');
+
+        if ($machine->checkReady()) {
             $this->transition('ready');
         }
+
+        return parent::onEnter($state);
     }
 }

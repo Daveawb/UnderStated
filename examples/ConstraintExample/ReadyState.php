@@ -1,4 +1,6 @@
-<?php namespace UnderStated\Examples\ConstraintExample;
+<?php
+
+namespace UnderStated\Examples\ConstraintExample;
 
 use UnderStated\States\State;
 
@@ -17,6 +19,11 @@ class ReadyState extends State
      */
     public function onEnter(State $state)
     {
-        return $this->machine->checkReady();
+        parent::onEnter($state);
+
+        /** @var StateMachine $machine */
+        $machine = $this->machine;
+
+        return $machine->checkReady();
     }
 }

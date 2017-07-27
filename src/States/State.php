@@ -1,4 +1,6 @@
-<?php namespace UnderStated\States;
+<?php
+
+namespace UnderStated\States;
 
 use Closure;
 use Fhaculty\Graph\Vertex;
@@ -172,8 +174,8 @@ class State implements MachineDriven
     }
 
     /**
-     * @param $method
-     * @param callable $closure
+     * @param string $method
+     * @param Closure $closure
      */
     public function addClosure($method, Closure $closure)
     {
@@ -214,6 +216,6 @@ class State implements MachineDriven
             return call_user_func_array($this->closures[$method], $args);
         }
 
-        return false;
+        return null;
     }
 }

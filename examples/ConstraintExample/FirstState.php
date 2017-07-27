@@ -16,9 +16,12 @@ class FirstState extends State
      */
     public function onEnter(State $state)
     {
-        $this->machine->unGuard('first');
+        /** @var StateMachine $machine */
+        $machine = $this->machine;
 
-        if ($this->machine->checkReady()) {
+        $machine->unGuard('first');
+
+        if ($machine->checkReady()) {
             $this->transition('ready');
         }
 

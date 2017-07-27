@@ -19,6 +19,11 @@ class Machine
     protected $id;
 
     /**
+     * @var EventInterface
+     */
+    protected $events;
+
+    /**
      * The state structure
      *
      * @var StructureInterface
@@ -87,8 +92,10 @@ class Machine
 
                 if ($this->execHandle('onEnter', [$from = $this->structure->getState($id)])) {
                     // Remove all the bound events from the previous state
-                    if ($bound = $from->getBoundEvents()) {
-                        $this->forget($bound);
+                    $boundEvents = $from->getBoundEvents();
+
+                    if ($boundEvents) {
+                        $this->forget($boundEvents);
                     }
 
                     // Emit a transition event

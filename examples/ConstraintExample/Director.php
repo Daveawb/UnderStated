@@ -3,7 +3,6 @@
 namespace UnderStated\Examples\ConstraintExample;
 
 use UnderStated\Contracts\MachineBuilder;
-use UnderStated\Machine;
 
 /**
  * Class Director
@@ -15,11 +14,12 @@ class Director
      * Build the machine
      *
      * @param MachineBuilder $builder
-     * @return Machine
+     * @return StateMachine
      */
     public function build(MachineBuilder $builder)
     {
-        return $builder->create(app()->make(StateMachine::class))
+        /** @var StateMachine $machine */
+        $machine = $builder->create(app()->make(StateMachine::class))
             ->state('first', FirstState::class)
             ->state('second', SecondState::class)
             ->state('third', ThirdState::class)
@@ -31,5 +31,7 @@ class Director
             ->transition('second', 'ready')
             ->transition('third', 'ready')
             ->get(false);
+
+        return $machine;
     }
 }

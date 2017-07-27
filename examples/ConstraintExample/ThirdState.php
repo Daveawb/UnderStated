@@ -14,9 +14,12 @@ class ThirdState extends State
      */
     public function onEnter(State $state)
     {
-        $this->machine->unGuard('third');
+        /** @var StateMachine $machine */
+        $machine = $this->machine;
 
-        if ($this->machine->checkReady()) {
+        $machine->unGuard('third');
+
+        if ($machine->checkReady()) {
             $this->transition('ready');
         }
 
