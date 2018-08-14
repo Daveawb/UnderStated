@@ -3,12 +3,12 @@ A PHP Finite State Machine (With Laravel 5.4 integration)
 [![Build Status](https://travis-ci.org/Daveawb/UnderStated.svg?branch=master)](https://travis-ci.org/Daveawb/UnderStated)
 
 ## Why use an FSM?
-FSM's are a resource that allow developers tight control over resources within an application. There are many
-articles detailing FSM's and what they are and what they're capable of so I won't go into much detail here.
+FSM's allow developers tight control over the state of different resources within an application. There are many
+articles detailing FSM's and what they are and what they're capable of so I won't go into much detail here. Safe to say, by managing state within an FSM you centralise and manage state simply and cleanly without needing to build it into your business logic. There are plenty of examples within this repository that should give you an idea of the practical uses of an FSM. Some good examples are present in libraries such as Redux, Angular UI Router and Apollo. Whilst this is an implementation for PHP where state isn't as much of a problem as other languages or technologies (Browser based JS and more importantly NodeJS) a well constructed FSM can ease the burden of building and rationalising large scale applications.
 
 ## Requirements
 - \>= PHP 7.0
-- \>= Laravel 5.4
+- (optional) \>= Laravel 5.4
 
 ## Installation
 ### Composer
